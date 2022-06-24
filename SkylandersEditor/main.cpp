@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <wchar.h>
+#include <Windows.h>
 
 #include "Portal.h"
 
@@ -9,10 +10,15 @@ int main()
 
 	Portal* portal = new Portal();
 
-	while (true)
-	{
-		portal->PrintIncoming();
-	}
+	portal->Ready();
+
+	portal->Activate();
+
+	portal->SetColor(0x00, 0x00, 0xFF);
+
+	Sleep(10000);
+
+	portal->Deactivate();
 
 	portal = NULL;
 	delete portal;

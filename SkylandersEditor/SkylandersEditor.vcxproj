@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Portal.cpp" />
+    <ClCompile Include="RWCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\hidapi\windows\hidapi.vcxproj">
@@ -139,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Portal.h" />
+    <ClInclude Include="RWCommand.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
