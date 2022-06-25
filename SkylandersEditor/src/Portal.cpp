@@ -102,6 +102,8 @@ void Portal::Ready()
 	{
 		Write(&readyCommand);
 	} while (CheckResponse(&readyCommand, 'R'));
+
+	printf("Portal ID: %X %X %X %X", readyCommand.buffer[1], readyCommand.buffer[2], readyCommand.buffer[3], readyCommand.buffer[4]);
 }
 
 void Portal::Activate()
