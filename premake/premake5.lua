@@ -8,6 +8,8 @@ workspace "SkylandersEditor"
 
    includedirs {"../hidapi/hidapi"}
 
+   startproject "SkylandersEditor"
+
    filter "configurations:Debug"
       defines { "DEBUG", "TRACE" }
       symbols "On"
