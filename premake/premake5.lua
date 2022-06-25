@@ -30,7 +30,7 @@ project "hidapi"
 	kind "StaticLib"
 	language "C"
 
-	location "../hidapi"
+	location "../projects/hidapi"
 
 	files {"../hidapi/hidapi/hidapi.h", "../hidapi/windows/hid.c", "../hidapi/windows/hidapi_winapi.h"}
 		
@@ -38,7 +38,7 @@ project "hidapi"
 project "SkylandersEditor"
    kind "ConsoleApp"
    language "C++"
-   location "../SkylandersEditor"   
+   location "../projects/SkylandersEditor"   
 
    links "hidapi"
 
