@@ -146,7 +146,7 @@ void Portal::SetColor(int r, int g, int b)
 
 /*
 	Known codes:
-	SetColorAlternative(0x00, 0x14, 0x28, 0x14, 0xF4, 0x01) (right grey-ish)
+	SetColorAlternative(0x00, 0x14, 0x28, 0x14, 0xF4, 0x01) (right grey)
 	SetColorAlternative(0x00, 0x00, 0xFF, 0x00, 0xD0, 0x07) (right green)
 	SetColorAlternative(0x00, 0x00, 0x00, 0x00, 0x00, 0x00) (disable right side)
 	SetColorAlternative(0x02, 0x00, 0xFF, 0x00, 0xD0, 0x07) (left green)
@@ -157,7 +157,7 @@ void Portal::SetColor(int r, int g, int b)
 */
 
 //observed values for u1 have been: 0xF4 and 0xD0
-void Portal::SetColorAlternative(int side, int r, int g, int b, int u1, int duration)
+void Portal::SetColorAlternative(int side, int r, int g, int b, int u, int duration)
 {
 	RWCommand colorCommand = RWCommand();
 
@@ -166,7 +166,7 @@ void Portal::SetColorAlternative(int side, int r, int g, int b, int u1, int dura
 	colorCommand.buffer[3] = r;
 	colorCommand.buffer[4] = g;
 	colorCommand.buffer[5] = b;
-	colorCommand.buffer[6] = u1;
+	colorCommand.buffer[6] = u;
 	colorCommand.buffer[7] = duration;
 
 	Write(&colorCommand);
