@@ -10,10 +10,57 @@ Portal::~Portal()
 	hid_close(handle);
 }
 
+#ifdef _WIN32
+
+#include <Windows.h>
+
+#define HID_CTL_CODE(id)    \
+        CTL_CODE(FILE_DEVICE_KEYBOARD, (id), METHOD_NEITHER, FILE_ANY_ACCESS)
+#define HID_IN_CTL_CODE(id)  \
+        CTL_CODE(FILE_DEVICE_KEYBOARD, (id), METHOD_IN_DIRECT, FILE_ANY_ACCESS)
+#define IOCTL_HID_SET_OUTPUT_REPORT             HID_IN_CTL_CODE(101)
+
+struct hid_device_ {
+	HANDLE device_handle;
+	BOOL blocking;
+	USHORT output_report_length;
+	unsigned char* write_buf;
+	size_t input_report_length;
+	USHORT feature_report_length;
+	unsigned char* feature_buf;
+	wchar_t* last_error_str;
+	BOOL read_pending;
+	char* read_buf;
+	OVERLAPPED ol;
+	OVERLAPPED write_ol;
+	struct hid_device_info* device_info;
+};
+
+
+void Portal::Write(RWCommand* command)
+{
+	BOOL res;
+
+	OVERLAPPED ol;
+	memset(&ol, 0, sizeof(ol));
+
+	DWORD bytes_returned;
+
+	res = DeviceIoControl(handle->device_handle,
+		IOCTL_HID_SET_OUTPUT_REPORT,
+		(unsigned char*)command->buffer, 0x21,
+		(unsigned char*)command->buffer, 0x21,
+		&bytes_returned, &ol);
+}
+
+#else
+
 void Portal::Write(RWCommand* command)
 {
 	hid_write(handle, command->buffer, 0x21);
 }
+
+#endif
 
 bool Portal::CheckResponse(RWCommand* command, char character)
 {
