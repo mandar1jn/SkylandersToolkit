@@ -155,6 +155,8 @@ void Portal::SetColor(int r, int g, int b)
 	SetColorAlternative(0x00, 0xFF, 0x00, 0x00, 0xD0, 0x07) (right red)
 	SetColorAlternative(0x00, 0x64, 0x3C, 0x64, 0xF4, 0x01) (right pink)
 */
+
+//observed values for u1 have been: 0xF4 and 0xD0
 void Portal::SetColorAlternative(int side, int r, int g, int b, int u1, int duration)
 {
 	RWCommand colorCommand = RWCommand();
