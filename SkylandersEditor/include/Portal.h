@@ -19,6 +19,7 @@ public:
 	void Activate();
 	void Deactivate();
 	void SetColor(int r, int g, int b);
+	void SetColorAlternative(int side, int r, int g, int b, int u1, int u2);
 
 private:
 	hid_device* handle;

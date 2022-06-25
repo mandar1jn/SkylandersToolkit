@@ -134,12 +134,39 @@ void Portal::Deactivate()
 
 void Portal::SetColor(int r, int g, int b)
 {
-	RWCommand deactivateCommand = RWCommand();
+	RWCommand colorCommand = RWCommand();
 
-	deactivateCommand.buffer[1] = 'C';
-	deactivateCommand.buffer[2] = r;
-	deactivateCommand.buffer[3] = g;
-	deactivateCommand.buffer[4] = b;
+	colorCommand.buffer[1] = 'C';
+	colorCommand.buffer[2] = r;
+	colorCommand.buffer[3] = g;
+	colorCommand.buffer[4] = b;
 
-	Write(&deactivateCommand);
+	Write(&colorCommand);
+}
+
+/*
+	Known codes:
+	SetColorAlternative(0x00, 0x14, 0x28, 0x14, 0xF4, 0x01) (right grey-ish)
+	SetColorAlternative(0x00, 0x00, 0xFF, 0x00, 0xD0, 0x07) (right green)
+	SetColorAlternative(0x00, 0x00, 0x00, 0x00, 0x00, 0x00) (disable right side)
+	SetColorAlternative(0x02, 0x00, 0xFF, 0x00, 0xD0, 0x07) (left green)
+	SetColorAlternative(0x00, 0x00, 0x00, 0xFF, 0xD0, 0x07) (right blue)
+	SetColorAlternative(0x02, 0xFF, 0x00, 0x00, 0xD0, 0x07) (left red)
+	SetColorAlternative(0x00, 0xFF, 0x00, 0x00, 0xD0, 0x07) (right red)
+	SetColorAlternative(0x00, 0x64, 0x3C, 0x64, 0xF4, 0x01) (right pink)
+*/
+void Portal::SetColorAlternative(int side, int r, int g, int b, int u1, int duration)
+{
+	RWCommand colorCommand = RWCommand();
+
+	colorCommand.buffer[1] = 'J';
+	colorCommand.buffer[2] = side;
+	colorCommand.buffer[3] = r;
+	colorCommand.buffer[4] = g;
+	colorCommand.buffer[5] = b;
+	colorCommand.buffer[6] = u1;
+	colorCommand.buffer[7] = duration;
+
+	Write(&colorCommand);
+
 }

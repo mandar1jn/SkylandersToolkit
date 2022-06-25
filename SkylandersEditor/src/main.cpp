@@ -14,11 +14,11 @@ int main()
 
 	portal->Activate();
 
-	portal->SetColor(0x00, 0x00, 0xFF);
+	portal->SetColorAlternative(0x02, 0x00, 0x00, 0x00, 0x00, 0xFF);
 
-	Sleep(10000);
+	//Sleep(10000);
 
-	portal->Deactivate();
+	//portal->Deactivate();
 
 	portal = NULL;
 	delete portal;
