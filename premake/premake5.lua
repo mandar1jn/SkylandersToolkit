@@ -36,8 +36,14 @@ project "raylib"
 	defines{"PLATFORM_DESKTOP", "GRAPHICS_API_OPENGL_33"}
 
 project "raygui"
-
 	kind "StaticLib"
+	language "C"
+
+	location "../projects/raygui"
+
+	includedirs {"../externals/raygui/src", "../externals/raylib/src"}
+
+	files "../externals/raygui/src/**.h"
 
 project "hidapi"
 	kind "StaticLib"
@@ -69,6 +75,7 @@ project "SkylandersEditor"
 	{
 		"../externals/raylib/src",
 		"../externals/hidapi/hidapi",
+		"../externals/raygui/src",
 		"../SkylandersEditor/include"
 	}
 
@@ -79,7 +86,7 @@ project "SkylandersEditor"
 
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
-		dependson {"raylib", "hidapi"}
+		dependson {"raylib", "hidapi", "raygui"}
 		links {"raylib.lib", "hidapi.lib"}
         characterset ("MBCS")
 

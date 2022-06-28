@@ -22,6 +22,7 @@ public:
 	void SetColorAlternative(int side, int r, int g, int b, int u, int duration);
 
 	bool connected;
+	char* status;
 
 private:
 	hid_device* handle;
