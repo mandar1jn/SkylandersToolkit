@@ -1,30 +1,43 @@
 workspace "SkylandersEditor"
-   configurations { "Debug", "Release" }
-   platforms { "Win32", "Win64"}
+	
+	configurations {"Debug", "Release"}
+	platforms {"x64"}
 
-   location "../"
+	defaultplatform "x64"
 
-   targetdir "../bin/%{cfg.buildcfg}"
+	location "../"
 
-   includedirs {"../hidapi/hidapi"}
+	targetdir "../bin/%{cfg.buildcfg}"
 
-   startproject "SkylandersEditor"
+	startproject "SkulandersEditor"
 
-   filter "configurations:Debug"
-      defines { "DEBUG", "TRACE" }
-      symbols "On"
+project "raylib"
 
-   filter "configurations:Release"
-      defines { "NDEBUG" }
-      optimize "On"
+	kind "StaticLib"
+		
+	filter "action:vs*"
+		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
+		links {"winmm"}
+				
+	filter{}
+	
+	location "../projects/raylib/"
+	language "C"
+	targetdir "../bin/%{cfg.buildcfg}"
+	
+	includedirs { "../externals/raylib/src", "../externals/raylib/src/external/glfw/include"}
+	vpaths 
+	{
+		["Header Files"] = { "../externals/raylib/src/**.h"},
+		["Source Files/*"] = {"../externals/raylib/src/**.c"},
+	}
+	files {"../externals/raylib/src/*.h", "../externals/raylib/src/*.c"}
+	
+	defines{"PLATFORM_DESKTOP", "GRAPHICS_API_OPENGL_33"}
 
-	filter { "platforms:Win32" }
-	  system "Windows"
-	  architecture "x86"
-  
-  	filter { "platforms:Win64" }
-	  system "Windows"
-	  architecture "x86_64"
+project "raygui"
+
+	kind "StaticLib"
 
 project "hidapi"
 	kind "StaticLib"
@@ -32,15 +45,45 @@ project "hidapi"
 
 	location "../projects/hidapi"
 
-	files {"../hidapi/hidapi/hidapi.h", "../hidapi/windows/hid.c", "../hidapi/windows/hidapi_winapi.h"}
-		
+	includedirs {"../externals/hidapi/hidapi/"}
+	files {"../externals/hidapi/hidapi/hidapi.h", "../externals/hidapi/windows/hid.c", "../externals/hidapi/windows/hidapi_winapi.h"}
 
 project "SkylandersEditor"
-   kind "ConsoleApp"
-   language "C++"
-   location "../projects/SkylandersEditor"   
+	kind "ConsoleApp"
 
-   links "hidapi"
+	language "C++"
 
-   files { "../SkylandersEditor/include/**.h", "../SkylandersEditor/src/**.cpp" }
-   includedirs {"../SkylandersEditor/include"}
+	location "../projects/SkylandersEditor"
+
+	intrinsics "On"
+
+	vpaths
+	{
+		["Source Files/*"] = "../SkylandersEditor/src/**.cpp",
+		["Header Files/*"] = "../SkylandersEditor/include/**.h",
+	}
+
+	links {"raylib", "hidapi"}
+
+	includedirs
+	{
+		"../externals/raylib/src",
+		"../externals/hidapi/hidapi",
+		"../SkylandersEditor/include"
+	}
+
+	files {
+		"../SkylandersEditor/src/**.cpp",
+		"../SkylandersEditor/include/**.h"
+	}
+
+	filter "action:vs*"
+		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
+		dependson {"raylib", "hidapi"}
+		links {"raylib.lib", "hidapi.lib"}
+        characterset ("MBCS")
+
+	filter "system:windows"
+		defines{"_WIN32"}
+		links {"winmm", "kernel32", "opengl32", "kernel32", "gdi32"}
+		libdirs {"../bin/%{cfg.buildcfg}"}

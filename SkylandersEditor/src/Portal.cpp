@@ -2,7 +2,8 @@
 
 Portal::Portal()
 {
-	Connect();
+	handle = NULL;
+	connected = false;
 }
 
 Portal::~Portal()
@@ -88,6 +89,8 @@ void Portal::Connect()
 	handle = hid_open_path(portals->path);
 
 	printf("Portal found\n");
+
+	connected = true;
 
 	hid_free_enumeration(portals);
 }

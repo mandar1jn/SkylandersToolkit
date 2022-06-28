@@ -1,25 +1,25 @@
 #include <stdio.h>
 #include <wchar.h>
-#include <Windows.h>
 
 #include "Portal.h"
 
+#include "raylib.h"
+
 int main()
 {
+	InitWindow(800, 600, "Skylanders Editor");
 	hid_init();
 
 	Portal* portal = new Portal();
 
-	portal->Ready();
+	while (!WindowShouldClose())
+	{
 
-	portal->Activate();
-
-	Sleep(2000);
-
-	portal->Deactivate();
+	}
 
 	portal = NULL;
 	delete portal;
 
 	hid_exit();
+	CloseWindow();
 }
