@@ -36,10 +36,10 @@ public:
 	bool connected;
 	char* status;
 	SupportedFeatures features;
+	void Disconnect();
 
 private:
 	hid_device* handle;
 	void SetFeatures(unsigned char* readyResponse);
-	void Disconnect();
 };
 

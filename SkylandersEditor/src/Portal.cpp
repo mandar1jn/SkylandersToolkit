@@ -47,6 +47,8 @@ void Portal::Connect()
 	hid_free_enumeration(portals);
 
 	this->Ready();
+
+	this->Activate();
 }
 
 void Portal::Ready()
@@ -168,6 +170,7 @@ void Portal::Disconnect()
 {
 	connected = false;
 	this->features = SupportedFeatures();
+	this->Deactivate();
 }
 
 #ifdef _WIN32

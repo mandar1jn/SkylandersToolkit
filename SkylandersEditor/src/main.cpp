@@ -58,7 +58,11 @@ void DrawPortalControls()
 	}
 	else
 	{
-		GuiButton({ 0, 30, 100, 20 }, "Portal connected");
+		if (GuiButton({ 0, 30, 100, 20 }, "Disconnect"))
+		{
+			portal->Disconnect();
+			portal->status = "Portal disconnected";
+		}
 	}
 
 	const static Rectangle COLOR_SELECTION_AREA = { (float)GetScreenWidth() - 140, 29, 141, 136 };
