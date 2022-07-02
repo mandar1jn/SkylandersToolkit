@@ -5,6 +5,7 @@ Portal::Portal()
 	handle = NULL;
 	connected = false;
 	status = "Portal not connected";
+	features = SupportedFeatures();
 }
 
 Portal::~Portal()
@@ -44,6 +45,8 @@ void Portal::Connect()
 	connected = true;
 
 	hid_free_enumeration(portals);
+
+	this->Ready();
 }
 
 void Portal::Ready()
@@ -60,6 +63,8 @@ void Portal::Ready()
 	} while (CheckResponse(&readyCommand, 'R'));
 
 	printf("Portal ID: %X %X\n", readyCommand.buffer[1], readyCommand.buffer[2]);
+
+	SetFeatures(readyCommand.buffer);
 }
 
 void Portal::Activate()
@@ -135,6 +140,21 @@ void Portal::SetColorAlternative(int side, int r, int g, int b, int u, int durat
 
 	Write(&colorCommand);
 
+}
+
+void Portal::SetFeatures(unsigned char* readyCommand)
+{
+	switch (readyCommand[1])
+	{
+	case 0x01:
+		break;
+	case 0x02:
+		switch (readyCommand[2])
+		{
+		case 0x18:
+			this->features = SupportedFeatures(true, true);
+		}
+	}
 }
 
 #ifdef _WIN32

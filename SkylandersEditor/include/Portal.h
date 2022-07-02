@@ -7,6 +7,18 @@
 #include "hidapi.h"
 #include "RWCommand.h"
 
+typedef struct SupportedFeatures
+{
+	bool color;
+	bool sidedColor;
+
+	SupportedFeatures(bool supportColor = false, bool supportSidedColor = false)
+	{
+		color = supportColor;
+		sidedColor = supportSidedColor;
+	}
+} SupportedFeatures;
+
 class Portal
 {
 public:
@@ -23,8 +35,10 @@ public:
 
 	bool connected;
 	char* status;
+	SupportedFeatures features;
 
 private:
 	hid_device* handle;
+	void SetFeatures(unsigned char* readyResponse);
 };
 

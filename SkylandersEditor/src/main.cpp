@@ -8,7 +8,7 @@
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 
-Color portalColor = RAYWHITE;
+Color portalColor = RED;
 Portal* portal;
 
 void DrawPortalControls();
@@ -27,7 +27,7 @@ int main()
 
 		ClearBackground(RAYWHITE);
 
-		GuiDrawRectangle({ 0, 0, (float)GetScreenWidth(), 30 }, 1, BLACK, RAYWHITE);
+		GuiDrawRectangle({ -1, 0, (float)GetScreenWidth() + 2, 30 }, 1, BLACK, RAYWHITE);
 
 		DrawPortalControls();
 
@@ -59,11 +59,21 @@ void DrawPortalControls()
 		GuiButton({ 0, 30, 100, 20 }, "Portal connected");
 	}
 
+	const static Rectangle COLOR_SELECTION_AREA = { (float)GetScreenWidth() - 140, 29, 141, 136 };
 
-	portalColor = GuiColorPicker({ (float)GetScreenWidth() - 130, 35, 100, 100}, "Select portal color", portalColor);
+	GuiDrawRectangle(COLOR_SELECTION_AREA, 1, BLACK, RAYWHITE);
 
-	if (GuiButton({ (float)GetScreenWidth() - 130, 140, 126, 20}, "Set color"))
+	if (portal->features.color)
 	{
-		portal->SetColor(portalColor.r, portalColor.g, portalColor.b);
+		portalColor = GuiColorPicker({ (float)GetScreenWidth() - 135, 35, 100, 100 }, "Select portal color", portalColor);
+
+		if (GuiButton({ (float)GetScreenWidth() - 135, 140, 126, 20 }, "Set color"))
+		{
+			portal->SetColor(portalColor.r, portalColor.g, portalColor.b);
+		}
+	}
+	else
+	{
+		GuiDrawText("Color not supported", COLOR_SELECTION_AREA, TEXT_ALIGN_CENTER, BLACK);
 	}
 }
