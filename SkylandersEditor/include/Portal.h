@@ -40,5 +40,6 @@ public:
 private:
 	hid_device* handle;
 	void SetFeatures(unsigned char* readyResponse);
+	void Disconnect();
 };
 

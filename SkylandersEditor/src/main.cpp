@@ -10,6 +10,8 @@
 
 Color portalColor = RED;
 Portal* portal;
+int colorSide = 1;
+bool editColorSide = false;
 
 void DrawPortalControls();
 
@@ -67,9 +69,34 @@ void DrawPortalControls()
 	{
 		portalColor = GuiColorPicker({ (float)GetScreenWidth() - 135, 35, 100, 100 }, "Select portal color", portalColor);
 
-		if (GuiButton({ (float)GetScreenWidth() - 135, 140, 126, 20 }, "Set color"))
+		if (GuiButton({ (float)GetScreenWidth() - 135, 200, 126, 20 }, "Set color"))
 		{
-			portal->SetColor(portalColor.r, portalColor.g, portalColor.b);
+			switch (colorSide)
+			{
+			case 0:
+				portal->SetColor(portalColor.r, portalColor.g, portalColor.b);
+				break;
+			case 1:
+				portal->SetColorAlternative(0x00, portalColor.r, portalColor.g, portalColor.b, 0x00, 0x00);
+				break;
+			case 2:
+				portal->SetColorAlternative(0x02, portalColor.r, portalColor.g, portalColor.b, 0x00, 0x00);
+				break;
+			}
+		}
+
+		const static Rectangle SIDE_SELECTOR_AREA = { (float)GetScreenWidth() - 135, 140, 126, 20 };
+		if (portal->features.sidedColor)
+		{
+			if (GuiDropdownBox(SIDE_SELECTOR_AREA, "all;right;left", &colorSide, editColorSide))
+			{
+				editColorSide = !editColorSide;
+			}
+		}
+		else
+		{
+			colorSide = 0;
+			GuiDropdownBox(SIDE_SELECTOR_AREA, "full portal", &colorSide, false);
 		}
 	}
 	else

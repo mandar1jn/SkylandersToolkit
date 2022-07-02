@@ -147,14 +147,27 @@ void Portal::SetFeatures(unsigned char* readyCommand)
 	switch (readyCommand[1])
 	{
 	case 0x01:
+		switch (readyCommand[2])
+		{
+		case 0x3D:
+			this->features = SupportedFeatures(true, false);
+		}
 		break;
 	case 0x02:
 		switch (readyCommand[2])
 		{
 		case 0x18:
 			this->features = SupportedFeatures(true, true);
+			break;
 		}
+		break;
 	}
+}
+
+void Portal::Disconnect()
+{
+	connected = false;
+	this->features = SupportedFeatures();
 }
 
 #ifdef _WIN32
@@ -204,7 +217,7 @@ void Portal::Write(RWCommand* command)
 	if (!res)
 	{
 		status = "failed to write. Disconnected.";
-		connected = false;
+		Disconnect();
 	}
 }
 
@@ -219,7 +232,7 @@ void Portal::Write(RWCommand* command)
 	if (res == -1)
 	{
 		status = "failed to write. Disconnected.";
-		connected = false;
+		Disconnect();
 	}
 }
 
