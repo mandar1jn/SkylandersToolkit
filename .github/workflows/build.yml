@@ -1,0 +1,40 @@
+name: Build and publish 
+
+on:
+  push:
+    branches: [master, workflow]
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os: [windows-latest]
+        configuration: [Debug, Release]
+
+      runs-on: ${{ matrix.os }}
+
+      steps:
+      - uses: actions/checkout@v2
+      - name: Setup premake
+        runs: |
+          cd premake
+          premake5.exe vs2022
+      - name: Build ${{ matrix.os }} - ${{ matrix.configuration }}
+        runs: |
+          msbuild SkylandersEditor.sln /p:Configuration=${{ matrix.configuration }}
+
+      - name: Copy files
+        runs: |
+          mkdir SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
+          cp ./bin/${{ matrix.configuration }}/SkylandersEditor* ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
+          cp ./README.md ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
+          cp ./LICENSE.txt
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          path: ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
