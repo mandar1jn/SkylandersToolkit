@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          submodule: recursive
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.1
       - name: Setup premake
