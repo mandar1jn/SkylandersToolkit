@@ -23,7 +23,7 @@ jobs:
       - name: Setup premake
         run: |
           cd premake
-          premake5.exe vs2022
+          premake5 vs2022
       - name: Build ${{ matrix.os }} - ${{ matrix.configuration }}
         run: |
           msbuild SkylandersEditor.sln /p:Configuration=${{ matrix.configuration }}
