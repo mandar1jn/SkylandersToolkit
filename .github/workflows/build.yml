@@ -1,0 +1,80 @@
+name: Build and publish 
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os: [windows-latest]
+        configuration: [Debug, Release]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+      - name: Setup premake
+        run: .\premake5 vs2022
+        working-directory: premake
+      - name: Build ${{ matrix.os }} - ${{ matrix.configuration }}
+        run: |
+          msbuild SkylandersEditor.sln /p:Configuration=${{ matrix.configuration }}
+
+      - name: Copy files
+        run: |
+          mkdir SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
+          cp ./bin/${{ matrix.configuration }}/SkylandersEditor.exe ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
+          cp ./README.md ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
+          cp ./LICENSE.txt ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
+
+      - name: Zip files
+        run: 7z a SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}.zip SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}/*
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
+          path: ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}.zip
+
+  upload:
+    
+    needs: [build]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+      - name: Delete tag and release
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          delete_release: true # default: false
+          tag_name: bleeding-edge # tag name to delete
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: bleeding-edge
+          name: Bleeding Edge
+          prerelease: true
+          files: |
+            artifacts/**
+          body: | 
+            This is an automatically updating **bleeding edge** build of SkylandersEditor. There **will** be bugs. If you find any issues, please report them on github or contact me in another way.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    
