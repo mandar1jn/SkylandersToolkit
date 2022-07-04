@@ -15,6 +15,6 @@ After that, you should be familiar with whatever platform you are using and you 
 
 ## Support
 
-Although I own quite a lot of figures, I don't own any from Skylanders Imaginators and Swap Force. There are a lot of kind people I have been in contact with who are willing to help me, but it's still likely that I will, at some point in the future, need to buy a few figures to do research on. If you want to help and financially support this project, you can do that using the button below.
+Although I own quite a lot of figures, I don't own any from Skylanders Imaginators and Swap Force. There are a lot of kind people I have been in contact with who are willing to help me, but it's still likely that I will, at some point in the future, need to buy a few figures to do research on. If you want to help and financially support this project, you can do that using the button below or using the direct link under the "Sponsor this project" heading somewhere on the meain repository page [here](https://github.com/mandar1jn/SkylandersEditor)
 
 <a href='https://ko-fi.com/mandar1jn' target='_blank'><img height='35' style='border:0px;height:46px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Support me at ko-fi.com' />
