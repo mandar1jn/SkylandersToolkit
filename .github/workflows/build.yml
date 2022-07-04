@@ -68,7 +68,7 @@ jobs:
           name: Bleeding Edge
           prerelease: true
           files: |
-            artifacts/*
+            artifacts/**
           body: | 
             This is an automatically updating **bleeding edge** build of SkylandersEditor. There **will** be bugs. If you find any issues, please report them on github or contact me in another way.
         env:
