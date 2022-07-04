@@ -44,3 +44,33 @@ jobs:
         with:
           name: SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
           path: ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
+
+  upload:
+    
+    needs: [build]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+      - name: Delete tag and release
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          delete_release: true # default: false
+          tag_name: bleeding-edge # tag name to delete
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: bleeding-edge
+          name: Bleeding Edge
+          prerelease: true
+          files: |
+            artifact/*
+          body: | 
+            This is an automatically updating **bleeding edge** build of SkylandersEditor. There **will** be bugs. If you find any issues, please report them on github or contact me in another way.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    
