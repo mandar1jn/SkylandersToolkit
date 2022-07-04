@@ -23,6 +23,7 @@ jobs:
       - name: Setup premake
         run: |
           cd premake
+          dir
           premake5 vs2022
       - name: Build ${{ matrix.os }} - ${{ matrix.configuration }}
         run: |
