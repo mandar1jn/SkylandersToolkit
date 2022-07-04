@@ -38,11 +38,14 @@ jobs:
           cp ./README.md ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
           cp ./LICENSE.txt ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
 
+      - name: Zip files
+        run: SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}.zip SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}/*
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
           name: SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
-          path: ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
+          path: ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}.zip
 
   upload:
     
