@@ -37,7 +37,7 @@ jobs:
           mkdir SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
           cp ./bin/${{ matrix.configuration }}/SkylandersEditor* ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
           cp ./README.md ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
-          cp ./LICENSE.txt
+          cp ./LICENSE.txt ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
