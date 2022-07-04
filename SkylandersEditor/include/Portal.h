@@ -34,12 +34,14 @@ public:
 	void SetColorAlternative(int side, int r, int g, int b, int u, int duration);
 
 	bool connected;
-	char* status;
+	std::string status;
 	SupportedFeatures features;
 	void Disconnect();
 
+	unsigned char Id[2] = {0x00, 0x00};
+
 private:
 	hid_device* handle;
-	void SetFeatures(unsigned char* readyResponse);
+	void SetFeatures();
 };
 

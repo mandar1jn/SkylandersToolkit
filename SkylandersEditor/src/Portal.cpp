@@ -40,15 +40,15 @@ void Portal::Connect()
 
 	handle = hid_open_path(portals->path);
 
+	hid_free_enumeration(portals);
+
 	status = "Portal connected";
 
 	connected = true;
 
-	hid_free_enumeration(portals);
+	Ready();
 
-	this->Ready();
-
-	this->Activate();
+	Activate();
 }
 
 void Portal::Ready()
@@ -64,9 +64,10 @@ void Portal::Ready()
 		Write(&readyCommand);
 	} while (CheckResponse(&readyCommand, 'R'));
 
-	printf("Portal ID: %X %X\n", readyCommand.buffer[1], readyCommand.buffer[2]);
+	Id[0] = readyCommand.buffer[1];
+	Id[1] = readyCommand.buffer[2];
 
-	SetFeatures(readyCommand.buffer);
+	SetFeatures();
 }
 
 void Portal::Activate()
@@ -93,10 +94,7 @@ void Portal::Deactivate()
 	deactivateCommand.buffer[1] = 'A';
 	deactivateCommand.buffer[2] = 0x00;
 
-	do
-	{
-		Write(&deactivateCommand);
-	} while (CheckResponse(&deactivateCommand, 'A'));
+	Write(&deactivateCommand);
 }
 
 void Portal::SetColor(int r, int g, int b)
@@ -144,22 +142,25 @@ void Portal::SetColorAlternative(int side, int r, int g, int b, int u, int durat
 
 }
 
-void Portal::SetFeatures(unsigned char* readyCommand)
+void Portal::SetFeatures()
 {
-	switch (readyCommand[1])
+
+	features = SupportedFeatures();
+
+	switch (Id[0])
 	{
 	case 0x01:
-		switch (readyCommand[2])
+		switch (Id[1])
 		{
 		case 0x3D:
-			this->features = SupportedFeatures(true, false);
+			features = SupportedFeatures(true, false);
 		}
 		break;
 	case 0x02:
-		switch (readyCommand[2])
+		switch (Id[1])
 		{
 		case 0x18:
-			this->features = SupportedFeatures(true, true);
+			features = SupportedFeatures(true, true);
 			break;
 		}
 		break;
@@ -168,9 +169,10 @@ void Portal::SetFeatures(unsigned char* readyCommand)
 
 void Portal::Disconnect()
 {
+	features = SupportedFeatures();
+	Deactivate();
+	memset(Id, 0, 2);
 	connected = false;
-	this->features = SupportedFeatures();
-	this->Deactivate();
 }
 
 #ifdef _WIN32

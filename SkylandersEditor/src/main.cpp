@@ -8,12 +8,22 @@
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 
+enum Menu
+{
+	PORTAL_CONTROLS = 0,
+	DEBUG
+};
+
 Color portalColor = RED;
 Portal* portal;
 int colorSide = 1;
 bool editColorSide = false;
+Menu currentMenu = PORTAL_CONTROLS;
 
-void DrawPortalControls();
+inline void DrawNavigation();
+inline void DrawPortalControls();
+inline void DrawDebugControls();
+inline void DrawStatus();
 
 int main()
 {
@@ -29,11 +39,19 @@ int main()
 
 		ClearBackground(RAYWHITE);
 
-		GuiDrawRectangle({ -1, 0, (float)GetScreenWidth() + 2, 30 }, 1, BLACK, RAYWHITE);
+		DrawNavigation();
 
-		DrawPortalControls();
+		switch (currentMenu)
+		{
+		case PORTAL_CONTROLS:
+			DrawPortalControls();
+			break;
+		case DEBUG:
+			DrawDebugControls();
+			break;
+		}
 
-		GuiStatusBar({ 0, static_cast<float>(GetScreenHeight() - 20), 150, 20 }, portal->status);
+		DrawStatus();
 
 		EndDrawing();
 	}
@@ -45,7 +63,27 @@ int main()
 	CloseWindow();
 }
 
-void DrawPortalControls()
+inline void DrawNavigation()
+{
+	GuiDrawRectangle({ -1, 0, (float)GetScreenWidth() + 2, 30 }, 1, BLACK, RAYWHITE);
+
+	if (GuiButton({ 5, 5, 50, 20 }, "Portal"))
+	{
+		currentMenu = PORTAL_CONTROLS;
+	}
+
+	if (GuiButton({ 60, 5, 50, 20 }, "Debug"))
+	{
+		currentMenu = DEBUG;
+	}
+}
+
+inline void DrawStatus()
+{
+	GuiStatusBar({ 0, (float)GetScreenHeight() - 20, 150, 20 }, portal->status.c_str());
+}
+
+inline void DrawPortalControls()
 {
 	if (!portal->connected)
 	{
@@ -107,4 +145,14 @@ void DrawPortalControls()
 	{
 		GuiDrawText("Color not supported", COLOR_SELECTION_AREA, TEXT_ALIGN_CENTER, BLACK);
 	}
+}
+
+inline void DrawDebugControls()
+{
+
+	char string[20];
+
+	sprintf(string, "Portal ID: 0x%X 0x%X", portal->Id[0], portal->Id[1]);
+
+	GuiDrawText(string, {2, 40}, TEXT_ALIGN_LEFT, BLACK);
 }
