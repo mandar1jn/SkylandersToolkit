@@ -15,9 +15,24 @@ Portal::~Portal()
 
 bool Portal::CheckResponse(RWCommand* command, char character)
 {
-	if (!connected) return true;
+	if (!connected) return false;
 
-	hid_read(handle, command->buffer, 0x20);
+	unsigned char readBuffer[33];
+
+	memset(readBuffer, 0, 33);
+
+	hid_read(handle, readBuffer, 0x20);
+
+	if (readBuffer[0] != character)
+	{
+
+		return true;
+	}
+	else
+	{
+		memcpy(command->buffer, readBuffer, 33);
+		return false;
+	}
 
 	return !(command->buffer[0] == character);
 }
