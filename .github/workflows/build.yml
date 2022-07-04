@@ -39,7 +39,7 @@ jobs:
           cp ./LICENSE.txt ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
 
       - name: Zip files
-        run: SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}.zip SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}/*
+        run: 7z SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}.zip SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}/*
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
