@@ -2,7 +2,7 @@ name: Build and publish
 
 on:
   push:
-    branches: [master, workflow]
+    branches: [master]
   workflow_dispatch:
 
 jobs:
@@ -35,7 +35,6 @@ jobs:
         run: |
           mkdir SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
           cp ./bin/${{ matrix.configuration }}/SkylandersEditor.exe ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
-          cp ./bin/${{ matrix.configuration }}/*.pdb ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
           cp ./README.md ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
           cp ./LICENSE.txt ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
 
