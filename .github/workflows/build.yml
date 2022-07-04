@@ -21,15 +21,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Setup premake
-        runs: |
+        run: |
           cd premake
           premake5.exe vs2022
       - name: Build ${{ matrix.os }} - ${{ matrix.configuration }}
-        runs: |
+        run: |
           msbuild SkylandersEditor.sln /p:Configuration=${{ matrix.configuration }}
 
       - name: Copy files
-        runs: |
+        run: |
           mkdir SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
           cp ./bin/${{ matrix.configuration }}/SkylandersEditor* ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
           cp ./README.md ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
