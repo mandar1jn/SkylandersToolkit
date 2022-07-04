@@ -15,27 +15,27 @@ jobs:
         os: [windows-latest]
         configuration: [Debug, Release]
 
-      runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
 
-      steps:
-        - name: Checkout repository
-          uses: actions/checkout@v2
-        - name: Setup premake
-          run: |
-            cd premake
-            premake5.exe vs2022
-        - name: Build ${{ matrix.os }} - ${{ matrix.configuration }}
-          run: |
-            msbuild SkylandersEditor.sln /p:Configuration=${{ matrix.configuration }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Setup premake
+        run: |
+          cd premake
+          premake5.exe vs2022
+      - name: Build ${{ matrix.os }} - ${{ matrix.configuration }}
+        run: |
+          msbuild SkylandersEditor.sln /p:Configuration=${{ matrix.configuration }}
 
-        - name: Copy files
-          run: |
-            mkdir SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
-            cp ./bin/${{ matrix.configuration }}/SkylandersEditor* ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
-            cp ./README.md ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
-            cp ./LICENSE.txt
-        
-        - name: Upload artifacts
-          uses: actions/upload-artifact@v2
-          with:
-            path: ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
+      - name: Copy files
+        run: |
+          mkdir SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
+          cp ./bin/${{ matrix.configuration }}/SkylandersEditor* ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
+          cp ./README.md ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
+          cp ./LICENSE.txt
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          path: ./SkylandersEditor-${{ matrix.os }}-${{ matrix.configuration }}
