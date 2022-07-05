@@ -33,6 +33,8 @@ int main()
 
 	portal = new Portal();
 
+	portal->Connect();
+
 	while (!WindowShouldClose())
 	{
 		BeginDrawing();
