@@ -21,24 +21,9 @@ bool Portal::CheckResponse(RWCommand* command, char character)
 {
 	if (!connected) return false;
 
-	unsigned char readBuffer[33];
+	hid_read(handle, command->readBuffer, 0x20);
 
-	memset(readBuffer, 0, 33);
-
-	hid_read(handle, readBuffer, 0x20);
-
-	if (readBuffer[0] != character)
-	{
-
-		return true;
-	}
-	else
-	{
-		memcpy(command->buffer, readBuffer, 33);
-		return false;
-	}
-
-	return !(command->buffer[0] == character);
+	return command->readBuffer[0] != character;
 }
 
 void Portal::Connect()
@@ -76,15 +61,15 @@ void Portal::Ready()
 
 	RWCommand readyCommand = RWCommand();
 
-	readyCommand.buffer[1] = 'R';
+	readyCommand.writeBuffer[1] = 'R';
 
 	do
 	{
 		Write(&readyCommand);
 	} while (CheckResponse(&readyCommand, 'R'));
 
-	Id[0] = readyCommand.buffer[1];
-	Id[1] = readyCommand.buffer[2];
+	Id[0] = readyCommand.readBuffer[1];
+	Id[1] = readyCommand.readBuffer[2];
 
 	SetFeatures();
 }
@@ -95,8 +80,8 @@ void Portal::Activate()
 
 	RWCommand activateCommand = RWCommand();
 
-	activateCommand.buffer[1] = 'A';
-	activateCommand.buffer[2] = 0x01;
+	activateCommand.writeBuffer[1] = 'A';
+	activateCommand.writeBuffer[2] = 0x01;
 
 	do
 	{
@@ -110,8 +95,8 @@ void Portal::Deactivate()
 
 	RWCommand deactivateCommand = RWCommand();
 
-	deactivateCommand.buffer[1] = 'A';
-	deactivateCommand.buffer[2] = 0x00;
+	deactivateCommand.writeBuffer[1] = 'A';
+	deactivateCommand.writeBuffer[2] = 0x00;
 
 	Write(&deactivateCommand);
 }
@@ -122,10 +107,10 @@ void Portal::SetColor(int r, int g, int b)
 
 	RWCommand colorCommand = RWCommand();
 
-	colorCommand.buffer[1] = 'C';
-	colorCommand.buffer[2] = r;
-	colorCommand.buffer[3] = g;
-	colorCommand.buffer[4] = b;
+	colorCommand.writeBuffer[1] = 'C';
+	colorCommand.writeBuffer[2] = r;
+	colorCommand.writeBuffer[3] = g;
+	colorCommand.writeBuffer[4] = b;
 
 	Write(&colorCommand);
 }
@@ -149,13 +134,13 @@ void Portal::SetColorAlternative(int side, int r, int g, int b, int u, int durat
 
 	RWCommand colorCommand = RWCommand();
 
-	colorCommand.buffer[1] = 'J';
-	colorCommand.buffer[2] = side;
-	colorCommand.buffer[3] = r;
-	colorCommand.buffer[4] = g;
-	colorCommand.buffer[5] = b;
-	colorCommand.buffer[6] = u;
-	colorCommand.buffer[7] = duration;
+	colorCommand.writeBuffer[1] = 'J';
+	colorCommand.writeBuffer[2] = side;
+	colorCommand.writeBuffer[3] = r;
+	colorCommand.writeBuffer[4] = g;
+	colorCommand.writeBuffer[5] = b;
+	colorCommand.writeBuffer[6] = u;
+	colorCommand.writeBuffer[7] = duration;
 
 	Write(&colorCommand);
 
@@ -239,8 +224,8 @@ void Portal::Write(RWCommand* command)
 
 	res = DeviceIoControl(handle->device_handle,
 		IOCTL_HID_SET_OUTPUT_REPORT,
-		(unsigned char*)command->buffer, 0x21,
-		(unsigned char*)command->buffer, 0x21,
+		(unsigned char*)command->writeBuffer, 0x21,
+		(unsigned char*)command->writeBuffer, 0x21,
 		&bytes_returned, &ol);
 
 	if (!res)

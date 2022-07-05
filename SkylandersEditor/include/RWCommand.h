@@ -5,7 +5,8 @@
 class RWCommand
 {
 public:
-	unsigned char buffer[0x21];
+	unsigned char writeBuffer[0x21];
+	unsigned char readBuffer[0x20];
 
 	RWCommand();
 	~RWCommand();

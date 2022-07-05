@@ -14,7 +14,7 @@ enum Menu
 	DEBUG
 };
 
-Color portalColor = RED;
+Color portalColor = {0xFF, 0x00, 0x00};
 Portal* portal;
 int colorSide = 1;
 bool editColorSide = false;
