@@ -168,7 +168,10 @@ void Portal::SetFeatures()
 		switch (Id[1])
 		{
 		case 0x3D:
-			features = SupportedFeatures(true, false);
+			features = SupportedFeatures(true);
+			break;
+		case 0x40:
+			features = SupportedFeatures(true);
 		}
 		break;
 	case 0x02:
