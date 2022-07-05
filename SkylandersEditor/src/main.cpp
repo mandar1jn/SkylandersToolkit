@@ -58,6 +58,8 @@ int main()
 		EndDrawing();
 	}
 
+	portal->~Portal();
+
 	portal = NULL;
 	delete portal;
 

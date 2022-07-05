@@ -10,6 +10,10 @@ Portal::Portal()
 
 Portal::~Portal()
 {
+	if (connected)
+	{
+		Disconnect();
+	}
 	hid_close(handle);
 }
 
