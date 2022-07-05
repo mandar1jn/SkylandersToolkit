@@ -156,10 +156,12 @@ void Portal::SetFeatures()
 	case 0x01:
 		switch (Id[1])
 		{
+		// runic portal (giants, wired)
 		case 0x3C:
 		case 0x3D:
 			features = SupportedFeatures(true);
 			break;
+		// runic portal (battlegrounds)
 		case 0x40:
 			features = SupportedFeatures(true);
 		}
@@ -167,10 +169,12 @@ void Portal::SetFeatures()
 	case 0x02:
 		switch (Id[1])
 		{
+		// traptanium portal
 		case 0x1B:
 		case 0x18:
 			features = SupportedFeatures(true, true);
 			break;
+		// swap force portal
 		case 0x03:
 			features = SupportedFeatures(true);
 		}
