@@ -171,6 +171,8 @@ void Portal::SetFeatures()
 		case 0x18:
 			features = SupportedFeatures(true, true);
 			break;
+		case 0x03:
+			features = SupportedFeatures(true);
 		}
 		break;
 	}
