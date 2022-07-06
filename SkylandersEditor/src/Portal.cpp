@@ -159,7 +159,7 @@ void Portal::SetFeatures()
 //runic portal (spyro's adventure, wireless)
 case 0x29:
     features = SupportedFeatures(true);
-    Break;
+    break;
 		// runic portal (giants, wired)
 		case 0x3C:
 		case 0x3D:
