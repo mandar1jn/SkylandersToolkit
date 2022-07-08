@@ -1,7 +1,7 @@
 workspace "SkylandersEditor"
 	
 	configurations {"Debug", "Release"}
-	platforms {"x64"}
+	platforms {"x64", "arm"}
 
 	defaultplatform "x64"
 
@@ -9,17 +9,17 @@ workspace "SkylandersEditor"
 
 	targetdir "../bin/%{cfg.buildcfg}"
 
-	startproject "SkulandersEditor"
+	startproject "SkylandersEditor"
+
+	filter "platforms:x64"
+		architecture "x64"
+
+	filter "platforms:arm"
+		architecture "arm"
 
 project "raylib"
 
 	kind "StaticLib"
-		
-	filter "action:vs*"
-		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
-		links {"winmm"}
-				
-	filter{}
 	
 	location "../projects/raylib/"
 	language "C"
@@ -34,6 +34,10 @@ project "raylib"
 	files {"../externals/raylib/src/*.h", "../externals/raylib/src/*.c"}
 	
 	defines{"PLATFORM_DESKTOP", "GRAPHICS_API_OPENGL_33"}
+
+	filter "action:vs"
+		defines {"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WANRINGS", "_WIN30"}
+		links {"winmm"}
 
 project "raygui"
 	kind "StaticLib"
@@ -52,7 +56,14 @@ project "hidapi"
 	location "../projects/hidapi"
 
 	includedirs {"../externals/hidapi/hidapi/"}
-	files {"../externals/hidapi/hidapi/hidapi.h", "../externals/hidapi/windows/hid.c", "../externals/hidapi/windows/hidapi_winapi.h"}
+
+	files {"../externals/hidapi/hidapi/hidapi.h", "../externals/hidapi/linux/hid.c", "../externals/hidapi/windows/hid.c", "../externals/hidapi/windows/hidapi_winapi.h"}
+
+	filter "system:unix"
+		removefiles {"../externals/hidapi/windows/hid.c", "../externals/hidapi/windows/hidapi_winapi.h"}
+
+	filter "system:windows"
+		removefiles {"../externals/hidapi/linux/**"}
 
 project "SkylandersEditor"
 	kind "ConsoleApp"
@@ -88,7 +99,7 @@ project "SkylandersEditor"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
 		dependson {"raylib", "hidapi", "raygui"}
 		links {"raylib.lib", "hidapi.lib"}
-        characterset ("MBCS")
+        	characterset ("MBCS")
 
 	filter "system:windows"
 		defines{"_WIN32"}
