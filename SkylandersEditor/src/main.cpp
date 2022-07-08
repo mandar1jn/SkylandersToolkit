@@ -102,6 +102,7 @@ inline void DrawPortalControls()
 	{
 		if (GuiButton({ 0, 30, 100, 20 }, "Disconnect"))
 		{
+
 			portal->Disconnect();
 			portal->status = "Portal disconnected";
 		}
