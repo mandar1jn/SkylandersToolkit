@@ -16,6 +16,9 @@ workspace "SkylandersEditor"
 
 	filter "platforms:arm"
 		architecture "arm"
+	
+	filter "action:gmake2"
+		links {"pthread", "GL", "m", "dl", "rt", "X11", "udev"}
 
 project "raylib"
 
@@ -59,7 +62,7 @@ project "hidapi"
 
 	files {"../externals/hidapi/hidapi/hidapi.h", "../externals/hidapi/linux/hid.c", "../externals/hidapi/windows/hid.c", "../externals/hidapi/windows/hidapi_winapi.h"}
 
-	filter "system:unix"
+	filter "system:linux"
 		removefiles {"../externals/hidapi/windows/hid.c", "../externals/hidapi/windows/hidapi_winapi.h"}
 
 	filter "system:windows"
@@ -87,7 +90,8 @@ project "SkylandersEditor"
 		"../externals/raylib/src",
 		"../externals/hidapi/hidapi",
 		"../externals/raygui/src",
-		"../SkylandersEditor/include"
+		"../SkylandersEditor/include",
+		"../externals/raylib/src/external/glfw/include"
 	}
 
 	files {
