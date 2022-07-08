@@ -251,7 +251,7 @@ void Portal::Write(RWCommand* command)
 {
 	if (!connected) return;
 
-	int res = hid_write(handle, command->buffer, 0x21);
+	int res = hid_write(handle, command->writeBuffer, 0x21);
 
 	if (res == -1)
 	{

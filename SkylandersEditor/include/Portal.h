@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <cstring>
 
 #include "hidapi.h"
 #include "RWCommand.h"
