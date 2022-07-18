@@ -27,4 +27,4 @@ jobs:
         with:
           cached: ${{ steps.qt-cache.outputs.cache-hit }}
           version: 6.3.1
-          archives: "qtbase"
+          setup-python: false
