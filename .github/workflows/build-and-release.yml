@@ -34,7 +34,13 @@ jobs:
           
       - name: Generate Makefiles
         run: |
-          mkdir bin
-          cd bin
+          mkdir build
+          cd build
           qmake ../SkylandersEditor.pro
+          dir
+          
+      - name: Build
+        run: |
+          cd build
+          make debug-all
           dir
