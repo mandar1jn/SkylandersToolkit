@@ -28,3 +28,10 @@ jobs:
           cached: ${{ steps.qt-cache.outputs.cache-hit }}
           version: 6.3.1
           setup-python: false
+          
+      - name: Build
+        run: |
+          mkdir bin
+          cd bin
+          qmake --project ../SkylandersEditor.pro
+          dir
