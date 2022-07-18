@@ -42,5 +42,5 @@ jobs:
       - name: Build
         run: |
           cd build
-          make debug
+          jom
           dir
