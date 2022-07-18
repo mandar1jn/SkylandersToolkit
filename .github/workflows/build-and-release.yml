@@ -29,6 +29,9 @@ jobs:
           version: 6.3.1
           setup-python: false
           
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+          
       - name: Build
         run: |
           mkdir bin
