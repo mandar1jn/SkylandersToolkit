@@ -32,7 +32,7 @@ jobs:
       - name: Set up Visual Studio shell
         uses: egor-tensin/vs-shell@v2
           
-      - name: Build
+      - name: Generate Makefiles
         run: |
           mkdir bin
           cd bin
