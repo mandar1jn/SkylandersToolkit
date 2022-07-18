@@ -1,0 +1,16 @@
+name: Build and release
+
+on:
+  push:
+    branches: [ "master", "qt-workflow" ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.2
+        with:
+          submodules: recursive
