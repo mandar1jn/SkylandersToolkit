@@ -29,6 +29,11 @@ jobs:
           version: 6.3.1
           setup-python: false
           
+      - name: Configure QT statically
+        run: |
+          cd ../QT
+          configure -static
+          
       - name: Set up Visual Studio shell
         uses: egor-tensin/vs-shell@v2
           
