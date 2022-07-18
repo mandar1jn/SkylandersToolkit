@@ -33,5 +33,5 @@ jobs:
         run: |
           mkdir bin
           cd bin
-          qmake --project ../SkylandersEditor.pro
+          qmake ../SkylandersEditor.pro
           dir
