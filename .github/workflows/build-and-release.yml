@@ -44,3 +44,7 @@ jobs:
           cd build
           nmake
           dir
+          cd debug
+          dir
+          cd ../release
+          dir
