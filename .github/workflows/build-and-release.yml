@@ -29,8 +29,8 @@ jobs:
           version: 6.3.1
           setup-python: false
           
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1
+      - name: Set up Visual Studio shell
+        uses: egor-tensin/vs-shell@v2
           
       - name: Build
         run: |
