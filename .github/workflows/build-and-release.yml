@@ -8,6 +8,12 @@ jobs:
   Build:
 
     runs-on: windows-latest
+    
+    strategy:
+      fail-fast: false
+    
+      matrix:
+        configuration: [debug, release]
 
     steps:
       - name: Checkout
@@ -29,16 +35,6 @@ jobs:
           version: 6.3.1
           setup-python: false
           
-      - name: Configure QT statically
-        run: |
-          cd ../QT
-          dir
-          cd ../QT/6.3.1/
-          dir
-          cd msvc2019_64
-          dir
-          configure.bat -static
-          
       - name: Set up Visual Studio shell
         uses: egor-tensin/vs-shell@v2
           
@@ -52,4 +48,15 @@ jobs:
       - name: Build
         run: |
           cd build
-          nmake
+          nmake ${{ matrix.configuration }}
+          
+      - name: Copy binary
+        run: |
+          mkdir output
+          cp build/${{ matrix.configuration }}/SkylandersEditor.exe output/SkylandersEditor.exe
+          
+      - name: Deploy
+        run: |
+          windeployqt ./output/
+          cd output
+          dir
