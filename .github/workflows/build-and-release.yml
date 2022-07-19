@@ -80,7 +80,7 @@ jobs:
       - name: Zip files
         run: |
           cd artifacts
-          for folder in */; do zip -r $folder; done;
+          for folder in */; do zip -r $folder $folder; done;
       - name: Delete tag and release
         uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
