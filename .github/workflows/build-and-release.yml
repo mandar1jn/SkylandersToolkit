@@ -57,6 +57,6 @@ jobs:
           
       - name: Deploy
         run: |
-          windeployqt --dir ./output/ --no-plugins --no-quick-import --no-translations --no-system-d3d-compiler --no-virtualkeyboard --no-compiler-runtime --no-opengl-sw
+          windeployqt --no-plugins --no-quick-import --no-translations --no-system-d3d-compiler --no-virtualkeyboard --no-compiler-runtime --no-opengl-sw --dir ./output/
           cd output
           dir
