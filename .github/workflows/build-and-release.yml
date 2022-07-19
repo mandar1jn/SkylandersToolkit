@@ -81,6 +81,7 @@ jobs:
         run: |
           cd artifacts
           for folder in */; do zip -r $folder $folder; done;
+          dir
       - name: Delete tag and release
         uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
@@ -95,7 +96,7 @@ jobs:
           name: Bleeding Edge
           prerelease: true
           files: |
-            artifacts/**
+            artifacts/*.zip
           body: | 
             This is an automatically updating **bleeding edge** build of SkylandersEditor. There **will** be bugs. If you find any issues, please report them on github or contact me in another way.
         env:
