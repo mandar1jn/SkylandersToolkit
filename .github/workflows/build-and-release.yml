@@ -58,7 +58,7 @@ jobs:
           
       - name: Deploy
         run: |
-          windeployqt --no-plugins --no-quick-import --no-translations --no-system-d3d-compiler --no-virtualkeyboard --no-compiler-runtime --no-opengl-sw ./output/
+          windeployqt --no-quick-import --no-translations --no-system-d3d-compiler --no-virtualkeyboard --no-compiler-runtime --no-opengl-sw ./output/
           
       - name: Upload artifact
         uses: actions/upload-artifact@v3.1.0
