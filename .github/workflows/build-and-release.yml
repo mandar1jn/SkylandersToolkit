@@ -7,13 +7,14 @@ on:
 jobs:
   Build:
 
-    runs-on: windows-latest
-    
     strategy:
       fail-fast: false
     
       matrix:
+        platform: [windows]
         configuration: [debug, release]
+        
+    runs-on: ${{ matrix.platform }}-latest
 
     steps:
       - name: Checkout
@@ -58,5 +59,8 @@ jobs:
       - name: Deploy
         run: |
           windeployqt --no-plugins --no-quick-import --no-translations --no-system-d3d-compiler --no-virtualkeyboard --no-compiler-runtime --no-opengl-sw ./output/
-          cd output
-          dir
+          
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: SkylandersEditor-${{ matrix.platform }}-${{ matrix.configuration }}
