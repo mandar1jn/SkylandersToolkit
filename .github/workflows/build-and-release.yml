@@ -35,6 +35,8 @@ jobs:
           dir
           cd ../QT/6.3.1/
           dir
+          cd msvc2019_64
+          dir
           configure.bat -static
           
       - name: Set up Visual Studio shell
