@@ -77,6 +77,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           path: artifacts
+      - name: Zip files
+        run: |
+          for folder in */; do "zip -r $folder"; done;
       - name: Delete tag and release
         uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
