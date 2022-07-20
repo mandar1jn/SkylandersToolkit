@@ -68,9 +68,6 @@ jobs:
           path: ./output/*
           
   Upload:
-  
-    permissions:
-      actions: read
     
     needs: [Build]
     
@@ -95,7 +92,7 @@ jobs:
                  archive_format: 'zip',
               });
                let fs = require('fs');
-               fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/${artifact.name}.zip`, Buffer.from(download.data));
+               fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/artifacts/${artifact.name}.zip`, Buffer.from(download.data));
             }
       - name: Delete tag and release
         uses: dev-drprasad/delete-tag-and-release@v0.2.0
