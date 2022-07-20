@@ -67,6 +67,9 @@ jobs:
           path: ./output/*
           
   Upload:
+  
+    permissions:
+      actions: read
     
     needs: [Build]
     
