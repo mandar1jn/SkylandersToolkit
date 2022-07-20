@@ -108,7 +108,7 @@ jobs:
           name: Bleeding Edge
           prerelease: true
           files: |
-            ${{ GITHUB_WORKSPACE }}/artifacts/**.zip
+            ${{ github.workspace }}/artifacts/**.zip
           body: | 
             This is an automatically updating **bleeding edge** build of SkylandersEditor. There **will** be bugs. If you find any issues, please report them on github or contact me in another way.
         env:
