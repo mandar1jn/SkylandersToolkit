@@ -84,7 +84,7 @@ jobs:
             let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
                owner: context.repo.owner,
                repo: context.repo.repo,
-               run_id: github.run_id,
+               run_id: context.github.run_id,
             });
             console.log(allArtifacts);
       - name: Delete tag and release
