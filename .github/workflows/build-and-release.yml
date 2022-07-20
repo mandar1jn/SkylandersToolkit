@@ -83,6 +83,7 @@ jobs:
                repo: context.repo.repo,
                run_id: ${{ github.run_id }},
             });
+            console.log(allArtifacts);
             for (const artifact of allArtifacts.data.artifacts)
             {
               let download = await github.rest.actions.downloadArtifact({
