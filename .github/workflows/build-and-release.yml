@@ -82,7 +82,7 @@ jobs:
                repo: context.repo.repo,
                run_id: github.run_id,
             });
-            console.log(allArtifacts)
+            console.log(allArtifacts);
       - name: Delete tag and release
         uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
