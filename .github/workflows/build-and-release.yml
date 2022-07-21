@@ -85,7 +85,6 @@ jobs:
         uses: actions/github-script@v6.1.0
         with:
           script: |
-            const archiver = require("archiver");
             const { readdirSync } = require('fs')
 
             const getDirectories = source =>
@@ -93,7 +92,7 @@ jobs:
                 .filter(dirent => dirent.isDirectory())
                 .map(dirent => dirent.name)
                 
-            console.log(getDirectories());
+            console.log(getDirectories("./artifacts/"));
       - name: Delete tag and release
         uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
