@@ -8,6 +8,9 @@ That is correct. This was originally made in raylib, but I decided to switch to 
 
 ## Building
 
+### Requirements
+To build this project, you need to install [QT](https://www.qt.io/). You can download the open source version [here](https://www.qt.io/download-open-source)
+
 ### Cloning the project
 This project contains submodules and, therefor, needs an addition to the clone command. With this addition, the command becomes ``git clone https://github.com/mandar1jn/SkylandersEditor --recursive``.
 
