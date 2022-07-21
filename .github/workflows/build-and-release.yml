@@ -97,8 +97,8 @@ jobs:
             for(let i = 0; i < dirs.length; i++)
             {
               const child_process = require("child_process");
-              child_process.execSync(`zip -r {dirs[i]}.zip *`, {
-                cwd: `./artifacts/{dirs[i]}/`
+              child_process.execSync(`zip -r ${dirs[i]}.zip *`, {
+                cwd: `./artifacts/${dirs[i]}/`
               });
             }
       - name: Delete tag and release
