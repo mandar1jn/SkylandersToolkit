@@ -2,7 +2,7 @@ name: Build and release
 
 on:
   push:
-    branches: [ "master", "qt-workflow" ]
+    branches: [ "master" ]
   workflow_dispatch:
 
 jobs:
