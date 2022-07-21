@@ -80,7 +80,7 @@ jobs:
           path: ./artifacts/
       - name: Install node dependency
         run: |
-          npm install -g archiver
+          npm install --location=global archiver
       - name: Zip files
         uses: actions/github-script@v6.1.0
         with:
@@ -92,7 +92,15 @@ jobs:
                 .filter(dirent => dirent.isDirectory())
                 .map(dirent => dirent.name)
                 
-            console.log(getDirectories("./artifacts/"));
+            let dirs = getDirectories("./artifacts");
+                
+            for(let i = 0; i < dirs.length; i++)
+            {
+              const child_process = require("child_process");
+              child_process.execSync(`zip -r {dirs[i]}.zip *`, {
+                cwd: `./artifacts/{dirs[i]}/`
+              });
+            }
       - name: Delete tag and release
         uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
