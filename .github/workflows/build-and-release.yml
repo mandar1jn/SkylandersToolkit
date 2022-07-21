@@ -1,0 +1,124 @@
+name: Build and release
+
+on:
+  push:
+    branches: [ "master", "qt-workflow" ]
+  workflow_dispatch:
+
+jobs:
+  Build:
+
+    strategy:
+      fail-fast: true
+    
+      matrix:
+        platform: [windows]
+        configuration: [debug, release]
+        
+    runs-on: ${{ matrix.platform }}-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.2
+        with:
+          submodules: recursive
+          
+      - name: Cache Qt
+        id: qt-cache
+        uses: actions/cache@v1  # not v2!
+        with:
+          path: ../Qt
+          key: ${{ runner.os }}-QtCache
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          cached: ${{ steps.qt-cache.outputs.cache-hit }}
+          version: 6.3.1
+          setup-python: false
+          
+      - name: Set up Visual Studio shell
+        uses: egor-tensin/vs-shell@v2
+          
+      - name: Generate Makefiles
+        run: |
+          mkdir build
+          cd build
+          qmake ../SkylandersEditor.pro
+          dir
+          
+      - name: Build
+        run: |
+          cd build
+          nmake ${{ matrix.configuration }}
+          
+      - name: Copy binary
+        run: |
+          mkdir output
+          cp build/${{ matrix.configuration }}/SkylandersEditor.exe output/SkylandersEditor.exe
+          
+      - name: Deploy
+        run: |
+          windeployqt --no-quick-import --no-translations --no-system-d3d-compiler --no-virtualkeyboard --no-compiler-runtime --no-opengl-sw ./output/
+          
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: SkylandersEditor-${{ matrix.platform }}-${{ matrix.configuration }}
+          path: ./output/*
+          
+  Upload:
+    
+    needs: [Build]
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3.0.0
+        with:
+          path: ./artifacts/
+      - name: Install node dependency
+        run: |
+          npm install --location=global archiver
+      - name: Zip files
+        uses: actions/github-script@v6.1.0
+        with:
+          script: |
+            const { readdirSync } = require('fs')
+
+            const getDirectories = source =>
+              readdirSync(source, { withFileTypes: true })
+                .filter(dirent => dirent.isDirectory())
+                .map(dirent => dirent.name)
+                
+            let dirs = getDirectories("./artifacts");
+                
+            for(let i = 0; i < dirs.length; i++)
+            {
+              const child_process = require("child_process");
+              child_process.execSync(`zip -r ../${dirs[i]}.zip *`, {
+                cwd: `./artifacts/${dirs[i]}/`
+              });
+              console.log(`${dirs[i]}.zip`);
+            }
+      - name: Delete tag and release
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          delete_release: true # default: false
+          tag_name: bleeding-edge # tag name to delete
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: bleeding-edge
+          name: Bleeding Edge
+          fail_on_unmatched_files: true
+          prerelease: true
+          files: |
+            ${{ github.workspace }}/artifacts/**.zip
+          body: | 
+            This is an automatically updating **bleeding edge** build of SkylandersEditor. There **will** be bugs. If you find any issues, please report them on github or contact me in another way.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
