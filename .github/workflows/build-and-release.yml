@@ -75,27 +75,25 @@ jobs:
     
     steps:
       - name: Download artifacts
-        uses: actions/github-script@v6
+        uses: actions/download-artifact@v3.0.0
+        with:
+          path: ./artifacts/
+      - name: Install node dependency
+        run: |
+          npm install -g archiver
+      - name: Zip files
+        uses: actions/github-script@v6.1.0
         with:
           script: |
-            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               run_id: ${{ github.run_id }},
-            });
-            console.log(allArtifacts);
-            for (const artifact of allArtifacts.data.artifacts)
-            {
-              let download = await github.rest.actions.downloadArtifact({
-                 owner: context.repo.owner,
-                 repo: context.repo.repo,
-                 artifact_id: artifact.id,
-                 archive_format: 'zip',
-              });
-               let fs = require('fs');
-               fs.writeFileSync(`${{ github.workspace }}/artifacts/${artifact.name}.zip`, Buffer.from(download.data));
-               console.log(`${{ github.workspace }}/artifacts/${artifact.name}.zip`)
-            }
+            const archiver = require("archiver");
+            const { readdirSync } = require('fs')
+
+            const getDirectories = source =>
+              readdirSync(source, { withFileTypes: true })
+                .filter(dirent => dirent.isDirectory())
+                .map(dirent => dirent.name)
+                
+            console.log(getDirectories());
       - name: Delete tag and release
         uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
@@ -108,6 +106,7 @@ jobs:
         with:
           tag_name: bleeding-edge
           name: Bleeding Edge
+          fail_on_unmatched_files: true
           prerelease: true
           files: |
             ${{ github.workspace }}/artifacts/**.zip
