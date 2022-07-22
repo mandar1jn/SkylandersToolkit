@@ -9,12 +9,23 @@ That is correct. This was originally made in raylib, but I decided to switch to 
 ## Building
 
 ### Requirements
-To build this project, you need to install [QT](https://www.qt.io/). You can download the open source version [here](https://www.qt.io/download-open-source)
+To build this project, you need to install [QT](https://www.qt.io/). You can download the open source version [here](https://www.qt.io/download-open-source). Make sure the bin folder from QT is also added to your PATH.
 
 ### Cloning the project
 This project contains submodules and, therefor, needs an addition to the clone command. With this addition, the command becomes ``git clone https://github.com/mandar1jn/SkylandersEditor --recursive``.
 
 If you cloned the repocitory without the recursive flag, you can run ``git submodule update --init`` inside the cloned folder instead.
+
+### Generating project files
+This project does not contain any traditional project files. It does, however, contain a `SkylandersEditor.pro` file that can be used to generate project files.
+
+To begin generating a project files, create a folde which will contain your project files and build artifacts.
+
+#### Visual Studio
+To generate the visual studio project files, run ``qmake -tp vc <PATH TO SkylandersEditor.pro>`` inside the folder you just created. After this, you should have a vcxproj file you can open and build.
+
+#### Makefile
+Makefiles are a very well know way of building c/c++ project. So, of course, QT supports that too. You just need to run ``qmake <PATH TO SkylandersEditor.pro>`` inside the folder you created. With this makefile created, you can just run ``make <configuration>`` where configuration is either release or debug to build the editor.
 
 ## Support
 
