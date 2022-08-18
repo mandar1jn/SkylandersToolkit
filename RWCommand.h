@@ -10,6 +10,9 @@ public:
 
     RWCommand();
     ~RWCommand();
+
+    bool SendUnverified();
+    bool SendVerified(char expectedChar, unsigned int attempts);
 };
 
 #endif // RWCOMMAND_H

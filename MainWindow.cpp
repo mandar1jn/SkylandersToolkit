@@ -24,6 +24,6 @@ MainWindow::~MainWindow()
 
     if(portal->connected)
     {
-        portal->Disconnect();
+        portal->Disconnect(true);
     }
 }

@@ -39,7 +39,7 @@ void MenuBar::ConnectPortal()
 
 void MenuBar::DisconnectPortal()
 {
-    Portal::GetPortal()->Disconnect();
+    Portal::GetPortal()->Disconnect(true);
 }
 
 void MenuBar::PortalUpdated()

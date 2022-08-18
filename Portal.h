@@ -39,15 +39,16 @@ public:
 
     bool connected;
     SupportedFeatures features;
-    void Disconnect();
+    void Disconnect(bool allowWrite);
 
     unsigned char Id[2] = {0x00, 0x00};
+
+    hid_device* handle;
 
 signals:
     void StateChanged();
 
 private:
-    hid_device* handle;
     void SetFeatures();
 
     static QPointer<Portal> self;

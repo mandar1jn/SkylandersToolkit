@@ -7,6 +7,8 @@ QPointer<Portal> Portal::self;
 Portal::Portal(QObject *parent)
     : QObject{parent}
 {
+    self = this;
+
     handle = NULL;
     connected = false;
     features = SupportedFeatures();
@@ -19,7 +21,7 @@ Portal::~Portal()
 
     if(connected)
     {
-        Disconnect();
+        Disconnect(true);
     }
 
     hid_close(handle);
@@ -81,10 +83,11 @@ void Portal::Ready()
 
     readyCommand.writeBuffer[1] = 'R';
 
-    do
+    if(!readyCommand.SendVerified('R', 15))
     {
-        Write(&readyCommand);
-    } while (CheckResponse(&readyCommand, 'R'));
+        Disconnect(false);
+        return;
+    }
 
     Id[0] = readyCommand.readBuffer[1];
     Id[1] = readyCommand.readBuffer[2];
@@ -101,10 +104,7 @@ void Portal::Activate()
     activateCommand.writeBuffer[1] = 'A';
     activateCommand.writeBuffer[2] = 0x01;
 
-    do
-    {
-        Write(&activateCommand);
-    } while (CheckResponse(&activateCommand, 'A'));
+    activateCommand.SendVerified('A', 15);
 }
 
 void Portal::Deactivate()
@@ -116,7 +116,7 @@ void Portal::Deactivate()
     deactivateCommand.writeBuffer[1] = 'A';
     deactivateCommand.writeBuffer[2] = 0x00;
 
-    Write(&deactivateCommand);
+    deactivateCommand.SendUnverified();
 }
 
 void Portal::SetColor(int r, int g, int b)
@@ -130,7 +130,7 @@ void Portal::SetColor(int r, int g, int b)
     colorCommand.writeBuffer[3] = g;
     colorCommand.writeBuffer[4] = b;
 
-    Write(&colorCommand);
+    colorCommand.SendUnverified();
 }
 
 /*
@@ -160,7 +160,7 @@ void Portal::SetColorAlternative(int side, int r, int g, int b, int u, int durat
     colorCommand.writeBuffer[6] = u;
     colorCommand.writeBuffer[7] = duration;
 
-    Write(&colorCommand);
+    colorCommand.SendUnverified();
 
 }
 
@@ -174,16 +174,16 @@ void Portal::SetFeatures()
     case 0x01:
         switch (Id[1])
         {
-//runic portal (spyro's adventure, wireless)
-case 0x29:
-    features = SupportedFeatures(true);
-    break;
-        // runic portal (giants, wired)
+        //runic portal (spyro's adventure, wireless)
+        case 0x29:
+            features = SupportedFeatures(true);
+            break;
+            // runic portal (giants, wired)
         case 0x3C:
         case 0x3D:
             features = SupportedFeatures(true);
             break;
-        // runic portal (battlegrounds)
+            // runic portal (battlegrounds)
         case 0x40:
             features = SupportedFeatures(true);
         }
@@ -196,7 +196,7 @@ case 0x29:
         case 0x18:
             features = SupportedFeatures(true, true);
             break;
-        // swap force portal
+            // swap force portal
         case 0x00:
         case 0x03:
             features = SupportedFeatures(true);
@@ -205,10 +205,14 @@ case 0x29:
     }
 }
 
-void Portal::Disconnect()
+void Portal::Disconnect(bool allowWrite)
 {
     features = SupportedFeatures();
-    Deactivate();
+
+    if(allowWrite)
+    {
+        Deactivate();
+    }
     memset(Id, 0, 2);
     connected = false;
 
@@ -220,9 +224,9 @@ void Portal::Disconnect()
 #include <Windows.h>
 
 #define HID_CTL_CODE(id)    \
-        CTL_CODE(FILE_DEVICE_KEYBOARD, (id), METHOD_NEITHER, FILE_ANY_ACCESS)
+    CTL_CODE(FILE_DEVICE_KEYBOARD, (id), METHOD_NEITHER, FILE_ANY_ACCESS)
 #define HID_IN_CTL_CODE(id)  \
-        CTL_CODE(FILE_DEVICE_KEYBOARD, (id), METHOD_IN_DIRECT, FILE_ANY_ACCESS)
+    CTL_CODE(FILE_DEVICE_KEYBOARD, (id), METHOD_IN_DIRECT, FILE_ANY_ACCESS)
 #define IOCTL_HID_SET_OUTPUT_REPORT             HID_IN_CTL_CODE(101)
 
 struct hid_device_ {
@@ -254,15 +258,15 @@ void Portal::Write(RWCommand* command)
     DWORD bytes_returned;
 
     res = DeviceIoControl(handle->device_handle,
-        IOCTL_HID_SET_OUTPUT_REPORT,
-        (unsigned char*)command->writeBuffer, 0x21,
-        (unsigned char*)command->writeBuffer, 0x21,
-        &bytes_returned, &ol);
+                          IOCTL_HID_SET_OUTPUT_REPORT,
+                          (unsigned char*)command->writeBuffer, 0x21,
+                          (unsigned char*)command->writeBuffer, 0x21,
+                          &bytes_returned, &ol);
 
     if (!res)
     {
         QMessageBox::warning(new QWidget, tr("Failed to write to portal."), tr("Failed to write to the portal. Disconnecting."));
-        Disconnect();
+        Disconnect(false);
     }
 }
 
@@ -277,7 +281,7 @@ void Portal::Write(RWCommand* command)
     if (res == -1)
     {
         QMessageBox::warning(new QWidget, tr("Failed to write to portal."), tr("Failed to write to the portal. Disconnecting."));
-        Disconnect();
+        Disconnect(false);
     }
 }
 
