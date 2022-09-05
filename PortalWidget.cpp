@@ -4,14 +4,13 @@
 #include <cstring>
 #include <QGridLayout>
 
-#include "Portal.h"
+#include "portal/Portal.h"
 
 PortalWidget::PortalWidget(QWidget *parent)
     : QWidget{parent}
 {
-    move(0, 15);
 
-    resize(130, 90);
+    //resize(130, 90);
 
     Portal* portal = Portal::GetPortal();
 
@@ -23,11 +22,11 @@ PortalWidget::PortalWidget(QWidget *parent)
 
     connect(colorPicker, &QColorDialog::colorSelected, this, &PortalWidget::ColorSelected);
 
-    QGridLayout* layout = new QGridLayout;
+    QVBoxLayout* layout = new QVBoxLayout;
 
     IDLabel = new QLabel(this);
 
-    layout->addWidget(IDLabel, 0, 0);
+    layout->addWidget(IDLabel);
 
     sideSelector = new QComboBox(this);
     sideSelector->addItem(tr("All"));
@@ -36,13 +35,15 @@ PortalWidget::PortalWidget(QWidget *parent)
 
     sideSelector->setToolTip(tr("Select the portal side to change the color"));
 
-    layout->addWidget(sideSelector, 1, 0);
+    layout->addWidget(sideSelector);
 
     colorButton = new QPushButton(tr("Select portal color"), this);
 
     connect(colorButton, &QPushButton::clicked, this, &PortalWidget::OpenColorSelector);
 
-    layout->addWidget(colorButton, 2, 0);
+    layout->addWidget(colorButton);
+
+    layout->setContentsMargins(5, 5, 5, 5);
 
     setLayout(layout);
 
@@ -64,7 +65,7 @@ void PortalWidget::PortalUpdated()
     sprintf(idText, "Portal ID: 0x%X 0x%X", portal->Id[0], portal->Id[1]);
     IDLabel->setText(tr(idText));
 
-    if(!Portal::GetPortal()->features.sidedColor)
+    if(!(Portal::GetPortal()->features & SIDED_COLOR))
     {
         sideSelector->setEditable(false);
         sideSelector->setEnabled(false);

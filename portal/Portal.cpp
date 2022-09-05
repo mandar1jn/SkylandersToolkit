@@ -11,7 +11,7 @@ Portal::Portal(QObject *parent)
 
     handle = NULL;
     connected = false;
-    features = SupportedFeatures();
+    features = NONE;
 
     Connect();
 }
@@ -166,8 +166,7 @@ void Portal::SetColorAlternative(int side, int r, int g, int b, int u, int durat
 
 void Portal::SetFeatures()
 {
-
-    features = SupportedFeatures();
+    features = NONE;
 
     switch (Id[0])
     {
@@ -176,16 +175,16 @@ void Portal::SetFeatures()
         {
         //runic portal (spyro's adventure, wireless)
         case 0x29:
-            features = SupportedFeatures(true);
+            features = COLOR;
             break;
             // runic portal (giants, wired)
         case 0x3C:
         case 0x3D:
-            features = SupportedFeatures(true);
+            features = COLOR;
             break;
             // runic portal (battlegrounds)
         case 0x40:
-            features = SupportedFeatures(true);
+            features = COLOR;
         }
         break;
     case 0x02:
@@ -194,12 +193,12 @@ void Portal::SetFeatures()
         // traptanium portal
         case 0x1B:
         case 0x18:
-            features = SupportedFeatures(true, true);
+            features = COLOR | SIDED_COLOR;
             break;
             // swap force portal
         case 0x00:
         case 0x03:
-            features = SupportedFeatures(true);
+            features = COLOR;
         }
         break;
     }
@@ -207,7 +206,7 @@ void Portal::SetFeatures()
 
 void Portal::Disconnect(bool allowWrite)
 {
-    features = SupportedFeatures();
+    features = NONE;
 
     if(allowWrite)
     {

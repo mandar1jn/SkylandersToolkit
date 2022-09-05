@@ -6,7 +6,7 @@
 #include <QObject>
 #include <hidapi.h>
 
-#include "Portal.h"
+#include "portal/Portal.h"
 
 RWCommand::RWCommand()
 {

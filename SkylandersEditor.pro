@@ -9,19 +9,19 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    Portal.cpp \
     PortalWidget.cpp \
     RWCommand.cpp \
     main.cpp \
     MainWindow.cpp \
-    MenuBar.cpp
+    MenuBar.cpp \
+    portal/Portal.cpp
 
 HEADERS += \
     MainWindow.h \
     MenuBar.h \
-    Portal.h \
     PortalWidget.h \
-    RWCommand.h
+    RWCommand.h \
+    portal/Portal.h
 
 include("./projects/hidapi.pro")
 

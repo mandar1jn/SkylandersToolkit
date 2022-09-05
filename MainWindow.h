@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTabWidget>
 
 #include "MenuBar.h"
 #include "PortalWidget.h"
@@ -14,7 +15,13 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void SetupWindow();
+    void SetupCentralWidget();
+    void SetLayouts();
+
     MenuBar* menuBar;
     PortalWidget* portalMenu;
+    QTabWidget* tabWidget;
+    QWidget* centralWidget;
 };
 #endif // MAINWINDOW_H

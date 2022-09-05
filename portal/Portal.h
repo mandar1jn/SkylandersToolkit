@@ -7,17 +7,11 @@
 
 #include "RWCommand.h"
 
-typedef struct SupportedFeatures
-{
-    bool color;
-    bool sidedColor;
-
-    SupportedFeatures(bool supportColor = false, bool supportSidedColor = false)
-    {
-        color = supportColor;
-        sidedColor = supportSidedColor;
-    }
-} SupportedFeatures;
+enum PortalFeatures : int {
+    SIDED_COLOR = (1 << 1),
+    COLOR = (1 << 0),
+    NONE = 0
+};
 
 class Portal : public QObject
 {
@@ -38,7 +32,7 @@ public:
     void SetColorAlternative(int side, int r, int g, int b, int u, int duration);
 
     bool connected;
-    SupportedFeatures features;
+    int features;
     void Disconnect(bool allowWrite);
 
     unsigned char Id[2] = {0x00, 0x00};
