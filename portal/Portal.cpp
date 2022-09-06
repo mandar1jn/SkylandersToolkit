@@ -204,6 +204,31 @@ void Portal::SetFeatures()
     }
 }
 
+PortalStatus* Portal::GetStatus()
+{
+    if(!connected)
+    {
+        PortalStatus* status = new PortalStatus();
+
+        return status;
+    }
+
+    RWCommand statusCommand = RWCommand();
+    statusCommand.writeBuffer[1] = 'S';
+
+    PortalStatus* status = new PortalStatus();
+
+    if(!statusCommand.SendVerified('S', 15))
+    {
+        status->success = false;
+        return status;
+    }
+
+    status->success = true;
+
+    return status;
+}
+
 void Portal::Disconnect(bool allowWrite)
 {
     features = NONE;

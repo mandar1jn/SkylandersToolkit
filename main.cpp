@@ -1,6 +1,13 @@
 #include "MainWindow.h"
 
 #include <QApplication>
+#include <thread>
+#include <iostream>
+
+void IOFunc()
+{
+    std::cout << "test" << std::endl;
+}
 
 int main(int argc, char *argv[])
 {

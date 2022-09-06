@@ -13,6 +13,10 @@ enum PortalFeatures : int {
     NONE = 0
 };
 
+typedef struct PortalStatus {
+    bool success;
+} PortalStatus;
+
 class Portal : public QObject
 {
     Q_OBJECT
@@ -30,6 +34,7 @@ public:
     void Deactivate();
     void SetColor(int r, int g, int b);
     void SetColorAlternative(int side, int r, int g, int b, int u, int duration);
+    PortalStatus* GetStatus();
 
     bool connected;
     int features;

@@ -17,6 +17,9 @@ public:
 
     void SetupWindow();
     void SetupCentralWidget();
+    void CreateMenuBar();
+    void CreateTabWidget();
+    void CreatePortalMenu();
     void SetLayouts();
 
     MenuBar* menuBar;

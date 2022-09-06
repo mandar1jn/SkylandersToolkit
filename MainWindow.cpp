@@ -9,19 +9,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     SetupWindow();
     SetupCentralWidget();
-    tabWidget = new QTabWidget(centralWidget);
-    QWidget* portalTab = new QWidget;
+    CreateMenuBar();
+    CreateTabWidget();
+    CreatePortalMenu();
     SetLayouts();
-
-    menuBar = new MenuBar(this);
-
-    menuBar->setGeometry(QRect(0, 0, 800, 22));
-
-    setMenuBar(menuBar);
-
-    portalMenu = new PortalWidget(portalTab);
-
-    tabWidget->addTab(portalTab, tr("Portal"));
 
 }
 
@@ -41,14 +32,31 @@ void MainWindow::SetupCentralWidget() {
 
 }
 
+void MainWindow::CreateMenuBar()
+{
+    menuBar = new MenuBar(this);
+
+    menuBar->setGeometry(QRect(0, 0, 800, 22));
+
+    setMenuBar(menuBar);
+}
+
+void MainWindow::CreateTabWidget()
+{
+    tabWidget = new QTabWidget(centralWidget);
+}
+
+void MainWindow::CreatePortalMenu()
+{
+    QWidget* portalTab = new QWidget;
+
+    portalMenu = new PortalWidget(portalTab);
+
+    tabWidget->addTab(portalTab, tr("Portal"));
+}
+
 void MainWindow::SetLayouts()
 {
-//    QVBoxLayout* windowLayout = new QVBoxLayout(this);
-
-//    windowLayout->setContentsMargins(5, 5, 5, 5);
-
-//    windowLayout->addWidget(centralWidget);
-
     QVBoxLayout* centralLayout = new QVBoxLayout(centralWidget);
 
     QWidget *topFiller = new QWidget;
