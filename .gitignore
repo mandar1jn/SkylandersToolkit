@@ -176,6 +176,10 @@ ipch/
 # Visual Studio Trace Files
 *.e2e
 
+# Visual Studio 2019 project files
+*.vcxproj
+*.vcxproj.filters
+
 # TFS 2012 Local Workspace
 $tf/
 

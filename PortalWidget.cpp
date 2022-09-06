@@ -10,8 +10,6 @@ PortalWidget::PortalWidget(QWidget *parent)
     : QWidget{parent}
 {
 
-    //resize(130, 90);
-
     Portal* portal = Portal::GetPortal();
 
     connect(portal, &Portal::StateChanged, this, &PortalWidget::PortalUpdated);
@@ -19,6 +17,8 @@ PortalWidget::PortalWidget(QWidget *parent)
     colorPicker = new QColorDialog(this);
 
     colorPicker->setWindowTitle(tr("Select portal color"));
+
+    colorPicker->setFixedSize(522, 402);
 
     connect(colorPicker, &QColorDialog::colorSelected, this, &PortalWidget::ColorSelected);
 

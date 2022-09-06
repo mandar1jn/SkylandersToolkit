@@ -43,11 +43,11 @@ void MainWindow::SetupCentralWidget() {
 
 void MainWindow::SetLayouts()
 {
-    QVBoxLayout* windowLayout = new QVBoxLayout(this);
+//    QVBoxLayout* windowLayout = new QVBoxLayout(this);
 
-    windowLayout->setContentsMargins(5, 5, 5, 5);
+//    windowLayout->setContentsMargins(5, 5, 5, 5);
 
-    windowLayout->addWidget(centralWidget);
+//    windowLayout->addWidget(centralWidget);
 
     QVBoxLayout* centralLayout = new QVBoxLayout(centralWidget);
 
