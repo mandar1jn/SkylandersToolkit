@@ -13,6 +13,8 @@ Portal::Portal(QObject *parent)
     connected = false;
     features = NONE;
 
+    worker = new PortalWorker;
+
     Connect();
 }
 
@@ -25,6 +27,9 @@ Portal::~Portal()
     }
 
     hid_close(handle);
+
+    delete worker;
+    worker = NULL;
 }
 
 Portal* Portal::GetPortal()
@@ -67,6 +72,8 @@ void Portal::Connect()
     hid_free_enumeration(portals);
 
     connected = true;
+
+    worker->start();
 
     Ready();
 
@@ -111,26 +118,26 @@ void Portal::Deactivate()
 {
     if (!connected) return;
 
-    RWCommand deactivateCommand = RWCommand();
+    RWCommand* deactivateCommand = new RWCommand();
 
-    deactivateCommand.writeBuffer[1] = 'A';
-    deactivateCommand.writeBuffer[2] = 0x00;
+    deactivateCommand->writeBuffer[1] = 'A';
+    deactivateCommand->writeBuffer[2] = 0x00;
 
-    deactivateCommand.SendUnverified();
+    worker->AddUnverifiedCommand(deactivateCommand);
 }
 
 void Portal::SetColor(int r, int g, int b)
 {
     if (!connected) return;
 
-    RWCommand colorCommand = RWCommand();
+    RWCommand* colorCommand = new RWCommand();
 
-    colorCommand.writeBuffer[1] = 'C';
-    colorCommand.writeBuffer[2] = r;
-    colorCommand.writeBuffer[3] = g;
-    colorCommand.writeBuffer[4] = b;
+    colorCommand->writeBuffer[1] = 'C';
+    colorCommand->writeBuffer[2] = r;
+    colorCommand->writeBuffer[3] = g;
+    colorCommand->writeBuffer[4] = b;
 
-    colorCommand.SendUnverified();
+    worker->AddUnverifiedCommand(colorCommand);
 }
 
 /*
@@ -150,17 +157,17 @@ void Portal::SetColorAlternative(int side, int r, int g, int b, int u, int durat
 {
     if (!connected) return;
 
-    RWCommand colorCommand = RWCommand();
+    RWCommand* colorCommand = new RWCommand();
 
-    colorCommand.writeBuffer[1] = 'J';
-    colorCommand.writeBuffer[2] = side;
-    colorCommand.writeBuffer[3] = r;
-    colorCommand.writeBuffer[4] = g;
-    colorCommand.writeBuffer[5] = b;
-    colorCommand.writeBuffer[6] = u;
-    colorCommand.writeBuffer[7] = duration;
+    colorCommand->writeBuffer[1] = 'J';
+    colorCommand->writeBuffer[2] = side;
+    colorCommand->writeBuffer[3] = r;
+    colorCommand->writeBuffer[4] = g;
+    colorCommand->writeBuffer[5] = b;
+    colorCommand->writeBuffer[6] = u;
+    colorCommand->writeBuffer[7] = duration;
 
-    colorCommand.SendUnverified();
+    worker->AddUnverifiedCommand(colorCommand);
 
 }
 
@@ -231,6 +238,8 @@ PortalStatus* Portal::GetStatus()
 
 void Portal::Disconnect(bool allowWrite)
 {
+    worker->requestInterruption();
+
     features = NONE;
 
     if(allowWrite)

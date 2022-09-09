@@ -18,20 +18,6 @@ RWCommand::~RWCommand()
 {
 }
 
-bool RWCommand::SendUnverified()
-{
-    Portal* portal = Portal::GetPortal();
-
-    if(!portal->connected)
-    {
-        return false;
-    }
-
-    portal->Write(this);
-
-    return true;
-}
-
 bool RWCommand::SendVerified(char expectedChar, unsigned int attempts)
 {
     Portal* portal = Portal::GetPortal();

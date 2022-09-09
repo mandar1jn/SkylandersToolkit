@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     PortalWidget.cpp \
+    PortalWorker.cpp \
     RWCommand.cpp \
     main.cpp \
     MainWindow.cpp \
@@ -20,8 +21,9 @@ HEADERS += \
     MainWindow.h \
     MenuBar.h \
     PortalWidget.h \
+    PortalWorker.h \
     RWCommand.h \
-    portal/Portal.h
+    portal/Portal.h \
 
 include("./projects/hidapi.pro")
 

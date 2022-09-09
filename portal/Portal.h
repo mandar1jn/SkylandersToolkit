@@ -4,8 +4,10 @@
 #include <QObject>
 #include <QPointer>
 #include <hidapi.h>
+#include <QMutex>
 
 #include "RWCommand.h"
+#include "PortalWorker.h"
 
 enum PortalFeatures : int {
     SIDED_COLOR = (1 << 1),
@@ -44,6 +46,8 @@ public:
 
     hid_device* handle;
 
+    QMutex portalMutex;
+
 signals:
     void StateChanged();
 
@@ -51,6 +55,7 @@ private:
     void SetFeatures();
 
     static QPointer<Portal> self;
+    PortalWorker* worker;
 
 };
 
