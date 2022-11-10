@@ -12,6 +12,14 @@
             }
         }
 
+        public short ID
+        {
+            get
+            {
+                return GetShort(0x01, 0x00);
+            }
+        }
+
         public Figure()
         {
             ClearData();
@@ -23,7 +31,7 @@
 
             for (int i = 0; i < data.Length; i++)
             {
-                data[i] = new byte[0x20];
+                data[i] = new byte[0x10];
             }
         }
 
@@ -67,9 +75,9 @@
                 string dataString = "";
                 for (int j = 0; j < data[i].Length; j++)
                 {
-                    dataString += $" 0x{((data[i][j].ToString("X").Length == 2) ? data[i][j].ToString("X") : "0" + data[i][j].ToString("X"))}";
+                    dataString += $" 0x{data[i][j].ToString("X2")}";
                 }
-                Console.WriteLine($"Block 0x{((i.ToString("X").Length == 2) ? i.ToString("X") : "0" + i.ToString("X"))}: {dataString}");
+                Console.WriteLine($"Block 0x{i.ToString("X2")}: {dataString}");
             }
         }
     }

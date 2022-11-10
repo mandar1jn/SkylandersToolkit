@@ -1,5 +1,4 @@
 ﻿using PortalLib;
-using System.Text;
 
 namespace SkylandersEditor
 {
@@ -13,11 +12,15 @@ namespace SkylandersEditor
 
             portal.Activate();
 
+            portal.SetColor(0x00, 0x00, 0xFF);
+
             Figure fig = new Figure();
 
             fig.ReadData(0);
 
             fig.LogData();
+
+            Console.WriteLine(fig.ID);
 
             portal.Deactivate();
 
