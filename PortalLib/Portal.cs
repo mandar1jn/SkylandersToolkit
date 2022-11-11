@@ -1,4 +1,7 @@
-﻿namespace PortalLib
+﻿using System.Collections;
+using System.Threading.Channels;
+
+namespace PortalLib
 {
 
     public enum PortalSide: byte
@@ -6,6 +9,15 @@
         RIGHT = 0x00,
         BOTH = 0x01,
         LEFT = 0x02,
+    }
+
+    public struct StatusResult
+    {
+        public List<byte> characterIndexes = new();
+
+        public StatusResult()
+        {
+        }
     }
 
     public class Portal
@@ -43,6 +55,17 @@
             id = Convert.ToUInt16((output[1] << 8) + output[2]);
 
             Instance = this;
+        }
+
+        public void Ready()
+        {
+            byte[] readyCommand = new byte[0x21];
+            readyCommand[1] = Convert.ToByte('R');
+
+            do
+            {
+                portalConnection.Write(readyCommand);
+            } while (portalConnection.Read()[0] != Convert.ToByte('R'));
         }
 
         public void Activate()
@@ -112,6 +135,52 @@
             } while (output[0] != Convert.ToByte('Q') || (output[1] != characterIndex && output[1] != characterIndex + 0x10) || output[2] != block);
 
             return output;
+        }
+
+        public StatusResult GetStatus()
+        {
+            byte[] statusCommand = new byte[0x21];
+            statusCommand[1] = Convert.ToByte('S');
+
+            byte[] output;
+
+            do
+            {
+                portalConnection.Write(statusCommand);
+                output = portalConnection.Read();
+            } while (output[0] != Convert.ToByte('S'));
+
+            StatusResult result = new StatusResult();
+
+            var bits = new BitArray(new int[] { output[1] });
+
+            bool changeBitsSet = false;
+
+            for (int i = 1; i < bits.Length; i += 2)
+            {
+                if (bits.Get(i))
+                {
+                    changeBitsSet = true;
+                    break;
+                }
+
+            }
+
+            if (!changeBitsSet)
+            {
+                for (int i = 0; i < bits.Length; i += 2)
+                {
+                    if (bits.Get(i))
+                        result.characterIndexes.Add(Convert.ToByte(i / 2));
+
+                }
+            }
+            else
+            {
+                result = GetStatus();
+            }
+
+            return result;
         }
 
         public void Close()

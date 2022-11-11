@@ -1,5 +1,13 @@
 ﻿namespace PortalLib
 {
+    public enum FigureType : byte
+    {
+        SKYLANDER = 0x18,
+        VEHICLE = 0x40,
+        TRAP = 0x30,
+        ULTIMATE_KAOS_TRAP = 0x35
+    }
+
     public class Figure
     {
         byte[][] data = new byte[0x40][];
@@ -17,6 +25,22 @@
             get
             {
                 return GetShort(0x01, 0x00);
+            }
+        }
+
+        public byte VariantID
+        {
+            get
+            {
+                return GetByte(0x01, 0x0C);
+            }
+        }
+
+        public FigureType Type
+        {
+            get
+            {
+                return (FigureType)GetByte(0x01, 0x0D);
             }
         }
 
