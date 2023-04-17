@@ -5,9 +5,8 @@ namespace PortalLib
 {
     public class PortalConnection
     {
-        private IntPtr devicePtr;
+        private readonly IntPtr devicePtr;
         private HidDevice device;
-        ushort id = 0;
 
         public PortalConnection()
         {
@@ -24,8 +23,16 @@ namespace PortalLib
         {
             IntPtr inputPtr = Marshal.AllocHGlobal(input.Length);
             Marshal.Copy(input, 0, inputPtr, input.Length);
+            Kernel32.DeviceIoControl(new Kernel32.SafeObjectHandle(device.device_handle, false), 721301, inputPtr, 0x21, IntPtr.Zero, 0, out _, new IntPtr());
+        }
 
-            Kernel32.DeviceIoControl(new Kernel32.SafeObjectHandle(device.device_handle, false), 721301, inputPtr, 0x21, IntPtr.Zero, 0, out int returned, new IntPtr());
+        public void WriteRaw(byte[] data)
+        {
+            HResult res = HidApi.hid_write(devicePtr, data, Convert.ToUInt32(data.Length));
+            if(res.Failed)
+            {
+                Console.WriteLine(Marshal.PtrToStringAuto(HidApi.hid_error(devicePtr)));
+            }
         }
 
         public byte[] Read()

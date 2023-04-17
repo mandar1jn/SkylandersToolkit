@@ -99,9 +99,9 @@
                 string dataString = "";
                 for (int j = 0; j < data[i].Length; j++)
                 {
-                    dataString += $" 0x{data[i][j].ToString("X2")}";
+                    dataString += $" 0x{data[i][j]:X2}";
                 }
-                Console.WriteLine($"Block 0x{i.ToString("X2")}: {dataString}");
+                Console.WriteLine($"Block 0x{i:X2}: {dataString}");
             }
         }
     }

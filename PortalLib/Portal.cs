@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Threading.Channels;
 
 namespace PortalLib
 {
@@ -13,6 +12,8 @@ namespace PortalLib
 
     public struct StatusResult
     {
+        public bool ready = false;
+        public byte count = 0;
         public List<byte> characterIndexes = new();
 
         public StatusResult()
@@ -22,18 +23,16 @@ namespace PortalLib
 
     public class Portal
     {
-        PortalConnection portalConnection;
-        ushort id;
+        readonly PortalConnection portalConnection;
+        public ushort id;
+        public bool active = false;
 
         private static Portal? _instance;
         public static Portal Instance
         {
             get
             {
-                if (_instance == null)
-                {
-                    _instance = new Portal();
-                }
+                _instance ??= new Portal();
                 return _instance;
             }
             set
@@ -46,13 +45,9 @@ namespace PortalLib
         {
             portalConnection = new PortalConnection();
 
-            byte[] readyCommand = new byte[0x21];
-            readyCommand[1] = Convert.ToByte('R');
+            Ready();
 
-            portalConnection.Write(readyCommand);
-
-            byte[] output = portalConnection.Read();
-            id = Convert.ToUInt16((output[1] << 8) + output[2]);
+            Deactivate();
 
             Instance = this;
         }
@@ -62,10 +57,16 @@ namespace PortalLib
             byte[] readyCommand = new byte[0x21];
             readyCommand[1] = Convert.ToByte('R');
 
+            byte[] output;
+
             do
             {
                 portalConnection.Write(readyCommand);
-            } while (portalConnection.Read()[0] != Convert.ToByte('R'));
+
+                output = portalConnection.Read();
+            } while (output[0] != Convert.ToByte('R'));
+
+            id = Convert.ToUInt16((output[1] << 8) + output[2]);
         }
 
         public void Activate()
@@ -74,10 +75,16 @@ namespace PortalLib
             activationCommand[1] = Convert.ToByte('A');
             activationCommand[2] = 0x01;
 
+            byte[] output;
+
             do
             {
                 portalConnection.Write(activationCommand);
-            } while (portalConnection.Read()[0] != Convert.ToByte('A'));
+
+                output = portalConnection.Read();
+            } while (output[0] != Convert.ToByte('A') && output[1] == 0x01);
+
+            active = true;
         }
 
         public void Deactivate()
@@ -85,6 +92,17 @@ namespace PortalLib
             byte[] deactivationCommand = new byte[0x21];
             deactivationCommand[1] = Convert.ToByte('A');
             deactivationCommand[2] = 0x00;
+
+            byte[] output;
+
+            do
+            {
+                portalConnection.Write(deactivationCommand);
+
+                output = portalConnection.Read();
+            } while (output[0] != Convert.ToByte('A') && output[1] == 0x00);
+
+            active = false;
         }
 
         public void SetColor(byte r, byte g, byte b)
@@ -150,7 +168,11 @@ namespace PortalLib
                 output = portalConnection.Read();
             } while (output[0] != Convert.ToByte('S'));
 
-            StatusResult result = new StatusResult();
+            StatusResult result = new()
+            {
+                ready = output[6] == 0x01,
+                count = output[5]
+            };
 
             var bits = new BitArray(new int[] { output[1] });
 
@@ -186,6 +208,20 @@ namespace PortalLib
         public void Close()
         {
             portalConnection.Close();
+        }
+
+        public void Music(bool activate)
+        {
+            byte[] musicCommand = new byte[0x21];
+            musicCommand[1] = Convert.ToByte('M');
+            musicCommand[2] = Convert.ToByte(activate ? 0x01 : 0x00);
+
+            portalConnection.Write(musicCommand);
+        }
+
+        public void SendRawData(byte[] data)
+        {
+            portalConnection.WriteRaw(data);
         }
     }
 }
