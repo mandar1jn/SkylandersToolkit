@@ -30,6 +30,7 @@ namespace SkylandersToolkit.Commands
                 reader.BaseStream.Position = dataIndex + 4;
                 int dataLength = reader.ReadInt32();
                 byteArray = reader.ReadBytes(dataLength);
+                reader.Close();
             }
 
             for(int j = 0; j < byteArray.Length; j += 2)

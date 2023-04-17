@@ -1,4 +1,6 @@
-﻿namespace PortalLib
+﻿using System.Linq;
+
+namespace PortalLib
 {
     public enum FigureType : byte
     {
@@ -67,7 +69,20 @@
             {
                 byte[] output =  Portal.Instance.Query(index, i);
 
-                Array.Copy(output, 3, data[i], 0, 16);
+                byte[] blockData = new byte[0x10];
+                Array.Copy(output, 3, blockData, 0, 16);
+
+                // block 1 is sometimes a duplicate of block 0
+                if (i == 1)
+                {
+                    if (blockData.SequenceEqual(data[0]))
+                    {
+                        i -= 2;
+                        continue;
+                    }
+                }
+
+                Array.Copy(blockData, 0, data[i], 0, 16);
             }
         }
 
@@ -103,6 +118,16 @@
                 }
                 Console.WriteLine($"Block 0x{i:X2}: {dataString}");
             }
+        }
+
+        public void Dump(string filePath)
+        {
+            FileStream file = File.Create(filePath);
+            for(int i = 0; i < data.Length; i++)
+            {
+                file.Write(data[i]);
+            }
+            file.Close();
         }
     }
 }

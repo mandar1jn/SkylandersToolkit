@@ -160,7 +160,7 @@ namespace PortalLib
             {
                 portalConnection.Write(queryCommand);
                 output = portalConnection.Read();
-            } while (output[0] != Convert.ToByte('Q') || (output[1] != characterIndex && output[1] != characterIndex + 0x10) || output[2] != block);
+            } while (output[0] != Convert.ToByte('Q') || (output[1] % 0x10 != characterIndex && output[1] != 0x01) || output[2] != block);
 
             return output;
         }

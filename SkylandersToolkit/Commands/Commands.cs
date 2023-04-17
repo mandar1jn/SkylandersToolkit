@@ -91,5 +91,12 @@ namespace SkylandersToolkit.Commands
                 return path;
             }
         }
+
+        public static string RequestString(string message)
+        {
+            Console.Write(message);
+
+            return Console.ReadLine()!;
+        }
     }
 }
