@@ -136,6 +136,16 @@ namespace PortalLib
             portalConnection.Write(sidedColorCommand);
         }
 
+        public void SetLightColor(byte brightness)
+        {
+            byte[] lightCommand = new byte[0x21];
+            lightCommand[1] = Convert.ToByte('L');
+            lightCommand[2] = (byte)PortalSide.BOTH;
+            lightCommand[3] = brightness;
+
+            portalConnection.Write(lightCommand);
+        }
+
         public byte[] Query(byte characterIndex, byte block = 0x00)
         {
             byte[] queryCommand = new byte[0x21];
