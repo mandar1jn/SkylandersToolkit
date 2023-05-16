@@ -8,7 +8,7 @@ namespace SkylandersToolkit.Commands
 
         public override void Execute()
         {
-            Console.WriteLine($"Portal ID: {Portal.Instance.id}");
+            Console.WriteLine($"Portal ID: {Portal.Instance.id:X}");
 
             StatusResult status = Portal.Instance.GetStatus();
 

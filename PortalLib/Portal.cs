@@ -52,7 +52,7 @@ namespace PortalLib
             Instance = this;
         }
 
-        public void Ready()
+        public ushort Ready()
         {
             byte[] readyCommand = new byte[0x21];
             readyCommand[1] = Convert.ToByte('R');
@@ -67,6 +67,8 @@ namespace PortalLib
             } while (output[0] != Convert.ToByte('R'));
 
             id = Convert.ToUInt16((output[1] << 8) + output[2]);
+
+            return id;
         }
 
         public void Activate()
