@@ -13,12 +13,13 @@ namespace SkylandersToolkit.Commands
 
         public override void Execute()
         {
-            string sideString = Commands.RequestStringOption("Which side should the color be applied to? (left - right - both): ", new[] { "left", "right", "both" });
+            string sideString = Commands.RequestStringOption("Which side should the color be applied to? (left - right): ", new[] { "left", "right" });
 
             PortalSide side;
 
             switch (sideString)
             {
+                default:
                 case "left":
                     {
                         side = PortalSide.LEFT;
@@ -29,19 +30,13 @@ namespace SkylandersToolkit.Commands
                         side = PortalSide.RIGHT;
                         break;
                     }
-                default:
-                case "both":
-                    {
-                        side = PortalSide.BOTH;
-                        break;
-                    }
             }
 
             byte red = Commands.RequestByte("Red (0-255): ", 0, 255);
             byte green = Commands.RequestByte("Green (0-255): ", 0, 255);
             byte blue = Commands.RequestByte("Blue (0-255): ", 0, 255);
 
-            Portal.Instance.SetColorSided(side, red, green, blue, 0, 0);
+            Portal.Instance.SetColorSided(side, red, green, blue, 0x00, 0x00);
         }
     }
 }

@@ -2,11 +2,10 @@
 
 namespace PortalLib
 {
-
     public enum PortalSide: byte
     {
         RIGHT = 0x00,
-        BOTH = 0x01,
+        TRAP = 0x01,
         LEFT = 0x02,
     }
 
@@ -120,11 +119,6 @@ namespace PortalLib
 
         public void SetColorSided(PortalSide side, byte r, byte g, byte b, byte unknown1, byte unknown2)
         {
-            if(side == PortalSide.BOTH)
-            {
-                SetColor(r, g, b);
-                return;
-            }
 
             byte[] sidedColorCommand = new byte[0x21];
             sidedColorCommand[1] = Convert.ToByte('J');
@@ -138,12 +132,30 @@ namespace PortalLib
             portalConnection.Write(sidedColorCommand);
         }
 
-        public void SetLightColor(byte brightness)
+        public void SetLightBrightness(byte brightness)
         {
             byte[] lightCommand = new byte[0x21];
             lightCommand[1] = Convert.ToByte('L');
-            lightCommand[2] = (byte)PortalSide.BOTH;
+            lightCommand[2] = (byte)PortalSide.TRAP;
             lightCommand[3] = brightness;
+
+            portalConnection.Write(lightCommand);
+        }
+
+        public void SetLightColorSided(PortalSide side, byte r, byte g, byte b)
+        {
+            if (side == PortalSide.TRAP)
+            {
+                throw new Exception("This function should only be called for the left or right side of the protal");
+            }
+
+            byte[] lightCommand = new byte[0x21];
+            lightCommand[1] = Convert.ToByte('L');
+            lightCommand[2] = (byte)side;
+            lightCommand[3] = r;
+            lightCommand[4] = g;
+            lightCommand[5] = b;
+
 
             portalConnection.Write(lightCommand);
         }
