@@ -85,10 +85,10 @@ namespace PortalLib
                 {
                     decimal prev = cur;
                     cur = Math.Truncate(cur / 29);
-                    values[i] = ((prev / 29m) - cur) *  29m; ;
+                    values[i] = ((prev / 29) - cur) *  29;
                 }
 
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new StringBuilder(11);
                 for(int i = 9; i > 4; i--)
                 {
                     sb.Append(lookupTable[Convert.ToUInt32(values[i])]);
