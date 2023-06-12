@@ -44,7 +44,7 @@ namespace PortalLib
             }
         }
 
-        public uint WebCodeNumber1
+        public uint ToyCodeNumber1
         {
             get
             {
@@ -52,7 +52,7 @@ namespace PortalLib
             }
         }
 
-        public uint WebCodeNumber2
+        public uint WebtoyNumber2
         {
             get
             {
@@ -60,15 +60,15 @@ namespace PortalLib
             }
         }
 
-        public ulong FullWebCodeNumber
+        public ulong FullToyCodeNumber
         {
             get
             {
-                return ((ulong)WebCodeNumber2 << 32) | WebCodeNumber1;
+                return ((ulong)WebtoyNumber2 << 32) | ToyCodeNumber1;
             }
         }
 
-        public string WebCode
+        public string ToyCode
         {
             get
             {
@@ -78,7 +78,7 @@ namespace PortalLib
                     "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "X", "Y", "Z"
                 };
 
-                decimal cur = new(FullWebCodeNumber);
+                decimal cur = new(FullToyCodeNumber);
                 decimal[] values = new decimal[10];
 
                 for(int i = 0; i < values.Length;  i++)
