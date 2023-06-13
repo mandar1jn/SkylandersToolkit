@@ -72,33 +72,23 @@ namespace PortalLib
         {
             get
             {
-                string[] lookupTable = new string[]
-                {
-                    "2", "3", "4", "5", "6", "7", "8", "9", "B", "C", "D", "F", "G", "H", "J",
-                    "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "X", "Y", "Z"
-                };
+                string lookupTable = "23456789BCDFGHJKLMNPQRSTVWXYZ";
 
                 ulong cur = FullToyCodeNumber;
-                decimal[] values = new decimal[10];
+                byte[] values = new byte[10];
 
                 for(int i = 0; i < values.Length;  i++)
                 {
-                    values[i] = cur % 29;
+                    values[i] = (byte)(cur % 29);
                     cur /= 29;
-                    
                 }
 
                 StringBuilder sb = new(11);
-                for(int i = 9; i > 4; i--)
+                for(int i = 9; i >= 0; i--)
                 {
-                    sb.Append(lookupTable[Convert.ToUInt32(values[i])]);
-                }
-
-                sb.Append('-');
-
-                for (int i = 4; i >= 0; i--)
-                {
-                    sb.Append(lookupTable[Convert.ToUInt32(values[i])]);
+                    if (i == 4)
+                        sb.Append('-');
+                    sb.Append(lookupTable[Convert.ToInt32(values[i])]);
                 }
 
                 return sb.ToString();
