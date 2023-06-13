@@ -78,17 +78,17 @@ namespace PortalLib
                     "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "X", "Y", "Z"
                 };
 
-                decimal cur = new(FullToyCodeNumber);
+                ulong cur = FullToyCodeNumber;
                 decimal[] values = new decimal[10];
 
                 for(int i = 0; i < values.Length;  i++)
                 {
-                    decimal prev = cur;
-                    cur = Math.Truncate(cur / 29);
-                    values[i] = ((prev / 29) - cur) *  29;
+                    values[i] = cur % 29;
+                    cur /= 29;
+                    
                 }
 
-                StringBuilder sb = new StringBuilder(11);
+                StringBuilder sb = new(11);
                 for(int i = 9; i > 4; i--)
                 {
                     sb.Append(lookupTable[Convert.ToUInt32(values[i])]);
