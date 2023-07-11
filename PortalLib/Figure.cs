@@ -14,7 +14,13 @@ namespace PortalLib
 
     public class Figure
     {
+        static byte[] HASH_CONST = {
+                0x20, 0x43, 0x6F, 0x70, 0x79, 0x72, 0x69, 0x67, 0x68, 0x74, 0x20, 0x28, 0x43, 0x29, 0x20, 0x32, // Copyright (C) 2
+                0x30, 0x31, 0x30, 0x20, 0x41, 0x63, 0x74, 0x69, 0x76, 0x69, 0x73, 0x69, 0x6F, 0x6E, 0x2E, 0x20, // 010 Activision.
+                0x41, 0x6C, 0x6C, 0x20, 0x52, 0x69, 0x67, 0x68, 0x74, 0x73, 0x20, 0x52, 0x65, 0x73, 0x65, 0x72, // All Rights Reser
+                0x76, 0x65, 0x64, 0x2E, 0x20};                                                                  // ved.
         byte[][] data = new byte[0x40][];
+        byte[][] decryptedData = new byte[0x40][];
 
         public short ID
         {
@@ -116,6 +122,7 @@ namespace PortalLib
             for (int i = 0; i < data.Length; i++)
             {
                 data[i] = new byte[0x10];
+                decryptedData[i] = new byte[0x10];
             }
         }
 
@@ -131,9 +138,9 @@ namespace PortalLib
                 Array.Copy(output, 3, blockData, 0, 16);
 
                 // block 1 is sometimes a duplicate of block 0
-                if (i == 0)
+                if (i == 1)
                 {
-                    if ((blockData[0] ^ blockData[1] ^ blockData[2] ^ blockData[3]) != blockData[4])
+                    if (blockData.SequenceEqual(data[0]))
                     {
                         i -= 2;
                         continue;
@@ -141,6 +148,16 @@ namespace PortalLib
                 }
 
                 Array.Copy(blockData, 0, data[i], 0, 16);
+
+                if(((i + 1) % 4 == 0) || i < 8)
+                {
+                    Array.Copy(blockData, 0, decryptedData[i], 0, 16);
+                }
+                else
+                {
+                    // TODO: actually decrypt block
+                    Array.Copy(HASH_CONST, 0, decryptedData[i], 0, 16);
+                }
             }
         }
 
@@ -166,12 +183,22 @@ namespace PortalLib
             return value;
         }
 
-        public void Dump(string filePath)
+        public void Dump(bool decrypted, string filePath)
         {
             FileStream file = File.Create(filePath);
-            for(int i = 0; i < data.Length; i++)
+            if (!decrypted)
             {
-                file.Write(data[i]);
+                for (int i = 0; i < data.Length; i++)
+                {
+                    file.Write(data[i]);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < decryptedData.Length; i++)
+                {
+                    file.Write(decryptedData[i]);
+                }
             }
             file.Close();
         }

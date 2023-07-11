@@ -27,15 +27,31 @@ namespace SkylandersToolkit.Commands
                 return;
             }
 
-            string fileName = Commands.RequestString("File name: ") + ".dump";
+            string fileName = Commands.RequestString("File name: ");
 
-            string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), fileName));
+            {
+                string filePath = fileName + ".dump";
 
-            Figure figure = new();
-            figure.ReadData(index);
-            figure.Dump(path);
+                string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), filePath));
 
-            Console.WriteLine($"Successfully dumped the figure at {path}");
+                Figure figure = new();
+                figure.ReadData(index);
+                figure.Dump(false, path);
+
+                Console.WriteLine($"Successfully dumped the normal figure at {path}");
+            }
+
+            {
+                string filePath = fileName + ".decrypted.dump";
+
+                string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), filePath));
+
+                Figure figure = new();
+                figure.ReadData(index);
+                figure.Dump(true, path);
+
+                Console.WriteLine($"Successfully dumped the decrypted figure at {path}");
+            }
         }
     }
 }
