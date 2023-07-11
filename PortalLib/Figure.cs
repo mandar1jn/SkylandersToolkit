@@ -123,17 +123,17 @@ namespace PortalLib
         {
             ClearData();
 
-            for(byte i = 0; i < 64; i++)
+            for (byte i = 0; i < 64; i++)
             {
-                byte[] output =  Portal.Instance.Query(index, i);
+                byte[] output = Portal.Instance.Query(index, i);
 
                 byte[] blockData = new byte[0x10];
                 Array.Copy(output, 3, blockData, 0, 16);
 
                 // block 1 is sometimes a duplicate of block 0
-                if (i == 1)
+                if (i == 0)
                 {
-                    if (blockData.SequenceEqual(data[0]))
+                    if ((blockData[0] ^ blockData[1] ^ blockData[2] ^ blockData[3]) != blockData[4])
                     {
                         i -= 2;
                         continue;
