@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace PortalLib
@@ -142,7 +143,7 @@ namespace PortalLib
                 {
                     if (blockData.SequenceEqual(data[0]))
                     {
-                        i -= 2;
+                        i -= 1;
                         continue;
                     }
                 }
@@ -151,12 +152,34 @@ namespace PortalLib
 
                 if(((i + 1) % 4 == 0) || i < 8)
                 {
-                    Array.Copy(blockData, 0, decryptedData[i], 0, 16);
+                    Array.Copy(data[i], 0, decryptedData[i], 0, 16);
                 }
                 else
                 {
                     // TODO: actually decrypt block
-                    Array.Copy(HASH_CONST, 0, decryptedData[i], 0, 16);
+                    byte[] hashIn = new byte[0x56];
+                    data[0].CopyTo(hashIn, 0);
+                    data[1].CopyTo(hashIn, 0x10);
+                    hashIn[0x20] = i;
+                    HASH_CONST.CopyTo(hashIn, 0x21);
+
+                    byte[] key = MD5.Create().ComputeHash(hashIn);
+
+                    byte[] decrypted = new byte[0x10];
+
+                    using (Aes aesAlg = Aes.Create())
+                    {
+                        aesAlg.Key = key;
+                        aesAlg.Mode = CipherMode.ECB;
+                        aesAlg.Padding = PaddingMode.Zeros;
+
+                        ICryptoTransform decryptor = aesAlg.CreateDecryptor();
+
+                        decrypted = decryptor.TransformFinalBlock(data[i], 0, data[i].Length);
+
+                    }
+
+                    Array.Copy(decrypted, 0, decryptedData[i], 0, 16);
                 }
             }
         }
