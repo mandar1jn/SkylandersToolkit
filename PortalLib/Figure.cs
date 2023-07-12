@@ -1,21 +1,11 @@
-﻿using Microsoft.VisualBasic;
-using System.Linq;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
 namespace PortalLib
 {
-    public enum FigureType : byte
-    {
-        SKYLANDER = 0x18,
-        VEHICLE = 0x40,
-        TRAP = 0x30,
-        ULTIMATE_KAOS_TRAP = 0x35
-    }
-
     public class Figure
     {
-        static byte[] HASH_CONST = {
+        static readonly byte[] HASH_CONST = {
                 0x20, 0x43, 0x6F, 0x70, 0x79, 0x72, 0x69, 0x67, 0x68, 0x74, 0x20, 0x28, 0x43, 0x29, 0x20, 0x32, // Copyright (C) 2
                 0x30, 0x31, 0x30, 0x20, 0x41, 0x63, 0x74, 0x69, 0x76, 0x69, 0x73, 0x69, 0x6F, 0x6E, 0x2E, 0x20, // 010 Activision.
                 0x41, 0x6C, 0x6C, 0x20, 0x52, 0x69, 0x67, 0x68, 0x74, 0x73, 0x20, 0x52, 0x65, 0x73, 0x65, 0x72, // All Rights Reser
@@ -23,22 +13,14 @@ namespace PortalLib
         byte[][] data = new byte[0x40][];
         byte[][] decryptedData = new byte[0x40][];
 
-        public short ID
+        #region manufacturer
+        public uint NUID
         {
             get
             {
-                return GetShort(0x01, 0x00);
+                return (uint)(GetByte(0x0, 0x0) << 24) + (uint)(GetByte(0x0, 0x1) << 16) + (uint)(GetByte(0x0, 0x2) << 8) + (uint)GetByte(0x0, 0x3);
             }
         }
-
-        public short VariantID
-        {
-            get
-            {
-                return GetShort(0x01, 0x0C);
-            }
-        }
-
         public byte BCC
         {
             get
@@ -51,6 +33,40 @@ namespace PortalLib
             }
         }
 
+        public byte SAK
+        {
+            get
+            {
+                return GetByte(0x0, 0x5);
+            }
+        }
+
+        public short ATQA
+        {
+            get
+            {
+                return GetShort(0x0, 0x6);
+            }
+        }
+
+        public string ProductionYear
+        {
+            get
+            {
+                return "20" + GetByte(0x0, 0xF).ToString("X");
+            }
+        }
+        #endregion
+
+        public short ID
+        {
+            get
+            {
+                return GetShort(0x01, 0x00);
+            }
+        }
+
+        #region Toy code
         public uint ToyCodeNumber1
         {
             get
@@ -59,7 +75,7 @@ namespace PortalLib
             }
         }
 
-        public uint WebtoyNumber2
+        public uint ToyCodeNumber2
         {
             get
             {
@@ -71,7 +87,7 @@ namespace PortalLib
         {
             get
             {
-                return ((ulong)WebtoyNumber2 << 32) | ToyCodeNumber1;
+                return ((ulong)ToyCodeNumber2 << 32) | ToyCodeNumber1;
             }
         }
 
@@ -84,14 +100,14 @@ namespace PortalLib
                 ulong cur = FullToyCodeNumber;
                 byte[] values = new byte[10];
 
-                for(int i = 0; i < values.Length;  i++)
+                for (int i = 0; i < values.Length; i++)
                 {
                     values[i] = (byte)(cur % 29);
                     cur /= 29;
                 }
 
                 StringBuilder sb = new(11);
-                for(int i = 9; i >= 0; i--)
+                for (int i = 9; i >= 0; i--)
                 {
                     if (i == 4)
                         sb.Append('-');
@@ -102,12 +118,67 @@ namespace PortalLib
 
             }
         }
+        #endregion
 
-        public FigureType Type
+        public short VariantID
         {
             get
             {
-                return (FigureType)GetByte(0x01, 0x0D);
+                return GetShort(0x01, 0x0C);
+            }
+        }
+
+        #region counters
+
+        public byte CounterArea1
+        {
+            get
+            {
+                return GetByte(0x8, 0x9);
+            }
+            set
+            {
+                SetByte(0x8, 0x9, value);
+            }
+        }
+
+        public byte CounterArea2
+        {
+            get
+            {
+                return GetByte(0x24, 0x9);
+            }
+            set
+            {
+                SetByte(0x24, 0x9, value);
+            }
+        }
+        #endregion
+
+        public string Nickname
+        {
+            get
+            {
+                byte firstSector = (byte)((CounterArea1 >= CounterArea2) ? 0xA : 0x26);
+                string name = "";
+
+                for (byte i = 0; i <= 15; i++)
+                {
+
+                    byte block = (byte)((i < 8) ? firstSector : firstSector + 2);
+
+                    byte offset = (byte)((i < 8) ? i * 2 : (i - 8) * 2);
+
+                    string character = Encoding.Unicode.GetString(BitConverter.GetBytes(GetShort(block, offset)));
+
+                    name += character;
+
+                    if(character == "\0")
+                    {
+                        break;
+                    }
+                }
+                return (name != "\0")? name : "Not set";
             }
         }
 
@@ -127,6 +198,7 @@ namespace PortalLib
             }
         }
 
+        #region data reading
         public void ReadData(byte index)
         {
             ClearData();
@@ -186,13 +258,13 @@ namespace PortalLib
 
         public byte GetByte(int block, int offset)
         {
-            return data[block][offset];
+            return decryptedData[block][offset];
         }
         public void SetByte(int block, int offset, byte value)
         {
-            data[block][offset] = value;
+            decryptedData[block][offset] = value;
         }
-        public short GetShort(int block, int offset) { return (short)(data[block][offset] + (data[block][offset + 1] << 8)); }
+        public short GetShort(int block, int offset) { return (short)(decryptedData[block][offset] + (decryptedData[block][offset + 1] << 8)); }
 
         public uint GetUInt(int block, int offset)
         {
@@ -200,11 +272,12 @@ namespace PortalLib
 
             for (sbyte i = 3; i >= 0; i--)
             {
-                value += (uint)data[block][offset + i] << (8 * i);
+                value += (uint)decryptedData[block][offset + i] << (8 * i);
             }
 
             return value;
         }
+        #endregion
 
         public void Dump(bool decrypted, string filePath)
         {
