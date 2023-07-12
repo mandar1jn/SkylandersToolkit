@@ -29,13 +29,15 @@ namespace SkylandersToolkit.Commands
 
             string fileName = Commands.RequestString("File name: ");
 
+            Figure figure = new();
+            figure.ReadData(index);
+
             {
                 string filePath = fileName + ".dump";
 
                 string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), filePath));
 
-                Figure figure = new();
-                figure.ReadData(index);
+                
                 figure.Dump(false, path);
 
                 Console.WriteLine($"Successfully dumped the normal figure at {path}");
@@ -46,8 +48,6 @@ namespace SkylandersToolkit.Commands
 
                 string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), filePath));
 
-                Figure figure = new();
-                figure.ReadData(index);
                 figure.Dump(true, path);
 
                 Console.WriteLine($"Successfully dumped the decrypted figure at {path}");
