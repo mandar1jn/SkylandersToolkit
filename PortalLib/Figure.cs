@@ -228,7 +228,6 @@ namespace PortalLib
                 }
                 else
                 {
-                    // TODO: actually decrypt block
                     byte[] hashIn = new byte[0x56];
                     data[0].CopyTo(hashIn, 0);
                     data[1].CopyTo(hashIn, 0x10);
