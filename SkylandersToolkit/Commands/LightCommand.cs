@@ -33,11 +33,6 @@ namespace SkylandersToolkit.Commands
                 default:
                 case "trap":
                     {
-                        if(!Portal.Instance.active)
-                        {
-                            Console.WriteLine("The portal needs to be activated to set the trap light.");
-                            return;
-                        }
 
                         byte brightness = Commands.RequestByte("Brightness (0-255): ", 0, 255);
 
