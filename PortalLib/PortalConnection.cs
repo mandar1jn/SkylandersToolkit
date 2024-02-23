@@ -24,6 +24,7 @@ namespace PortalLib
             IntPtr inputPtr = Marshal.AllocHGlobal(input.Length);
             Marshal.Copy(input, 0, inputPtr, input.Length);
             Kernel32.DeviceIoControl(new Kernel32.SafeObjectHandle(device.device_handle, false), 721301, inputPtr, 0x21, IntPtr.Zero, 0, out _, new IntPtr());
+            Marshal.FreeHGlobal(inputPtr);
         }
 
         public void WriteRaw(byte[] data)
